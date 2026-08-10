@@ -22,7 +22,7 @@ final class StatisticsViewController: UIViewController {
         let label = UILabel()
         label.text = "Анализировать пока нечего"
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textColor = UIColor(named: "Black") ?? .black
+        label.textColor = UIColor(named: "YP Black") ?? .black
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -48,7 +48,7 @@ final class StatisticsViewController: UIViewController {
         ]
         appearance.largeTitleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 34, weight: .bold),
-            .foregroundColor: UIColor(named: "Black") ?? .black
+            .foregroundColor: UIColor(named: "YP Black") ?? .black
         ]
         
         navigationController?.navigationBar.standardAppearance = appearance
