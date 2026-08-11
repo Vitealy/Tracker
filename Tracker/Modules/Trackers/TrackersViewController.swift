@@ -14,12 +14,12 @@ protocol TrackersViewControllerDelegate: AnyObject {
 final class TrackersViewController: UIViewController {
     
     // MARK: - UI Elements
-    
+
     private lazy var datePicker: UIDatePicker = {
         let picker = UIDatePicker()
-        picker.datePickerMode = .date                  // Только дата, без времени
-        picker.preferredDatePickerStyle = .compact    // Компактный стиль (в навбаре)
-        picker.backgroundColor = .clear
+        picker.datePickerMode = .date
+        picker.preferredDatePickerStyle = .compact
+        picker.locale = Locale(identifier: "ru_RU")
         return picker
     }()
     

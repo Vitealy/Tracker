@@ -59,11 +59,7 @@ final class TrackerCell: UICollectionViewCell {
     }()
     
     private lazy var completeButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = .ypBlue // цвет по умолчанию
-        button.layer.cornerRadius = 17
+        let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(completeButtonTapped), for: .touchUpInside)
         return button
@@ -106,10 +102,9 @@ final class TrackerCell: UICollectionViewCell {
         }
         
         // Кнопка
-        let imageName = isCompleted ? "checkmark" : "plus"
-        completeButton.setImage(UIImage(systemName: imageName)?.withRenderingMode(.alwaysTemplate), for: .normal)
-        completeButton.tintColor = isCompleted ? .white : .white
-        completeButton.backgroundColor = isCompleted ? .ypGreen : .ypBlue // или цвет трекера? пусть будет контрастный.
+        let imageName = isCompleted ? "Button_Done" : "Button_Plus"
+        let image = UIImage(named: imageName)?.withRenderingMode(.alwaysOriginal)
+        completeButton.setImage(image, for: .normal)
         completeButton.isEnabled = !isFutureDate // если будущая дата, кнопка неактивна
         completeButton.alpha = isFutureDate ? 0.5 : 1.0
     }
@@ -144,6 +139,8 @@ final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Layout
     private func setupLayout() {
+        contentView.layer.cornerRadius = 0
+        contentView.clipsToBounds = false
         
         // Добавляем верхнюю и нижнюю части
         contentView.addSubview(topView)

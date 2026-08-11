@@ -10,15 +10,6 @@ import UIKit
 final class NewTrackerViewController: UIViewController {
     
     // MARK: - UI Elements
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Новая привычка" // будет меняться
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .label
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
     
     private let textField: UITextField = {
         let field = UITextField()
@@ -32,26 +23,106 @@ final class NewTrackerViewController: UIViewController {
         return field
     }()
     
-    private lazy var categoryCell: UITableViewCell = {
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
-        cell.textLabel?.text = "Категория"
-        cell.detailTextLabel?.text = "Важное" // пока статично
-        cell.accessoryType = .disclosureIndicator
-        cell.backgroundColor = .systemGray6
-        cell.layer.cornerRadius = 16
-        cell.clipsToBounds = true
-        return cell
+    // MARK: - Блок "Категория + Расписание"
+    private lazy var containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGray6
+        view.layer.cornerRadius = 16
+        view.clipsToBounds = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
-    private lazy var scheduleCell: UITableViewCell = {
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
-        cell.textLabel?.text = "Расписание"
-        cell.detailTextLabel?.text = "Ежедневно" // позже будет обновляться
-        cell.accessoryType = .disclosureIndicator
-        cell.backgroundColor = .systemGray6
-        cell.layer.cornerRadius = 16
-        cell.clipsToBounds = true
-        return cell
+    // Категория (верхняя часть)
+    private lazy var categoryView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.translatesAutoresizingMaskIntoConstraints = false
+        let tap = UITapGestureRecognizer(target: self, action: #selector(categoryTapped))
+        view.addGestureRecognizer(tap)
+        return view
+    }()
+    
+    private let categoryLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Категория"
+        label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        label.textColor = .label
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let categoryDetailLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Важное"
+        label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        label.textColor = .gray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let categoryArrowImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "chevron.right")
+        imageView.tintColor = .gray
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    // Разделитель 
+    private let separatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .separator
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    // Расписание (нижняя часть)
+    private lazy var scheduleView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.translatesAutoresizingMaskIntoConstraints = false
+        let tap = UITapGestureRecognizer(target: self, action: #selector(scheduleTapped))
+        view.addGestureRecognizer(tap)
+        return view
+    }()
+    
+    private let scheduleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Расписание"
+        label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        label.textColor = .label
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let scheduleDetailLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Ежедневно"
+        label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        label.textColor = .gray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let scheduleArrowImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "chevron.right")
+        imageView.tintColor = .gray
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    // MARK: - Кнопки в UIStackView
+    private lazy var buttonStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     private let cancelButton: UIButton = {
@@ -81,14 +152,12 @@ final class NewTrackerViewController: UIViewController {
     private let trackerType: TrackerType
     private var selectedCategory: String = "Важное"
     private var selectedDays: [Weekday] = Weekday.allCases
-    
-    weak var delegate: TrackersViewControllerDelegate? // для добавления трекера
+    weak var delegate: TrackersViewControllerDelegate?
     
     // MARK: - Init
     init(trackerType: TrackerType) {
         self.trackerType = trackerType
         super.init(nibName: nil, bundle: nil)
-        titleLabel.text = trackerType == .habit ? "Новая привычка" : "Новое нерегулярное событие"
     }
     
     required init?(coder: NSCoder) {
@@ -99,78 +168,127 @@ final class NewTrackerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        
+        // Настройка заголовка
+        navigationItem.title = trackerType == .habit ? "Новая привычка" : "Новое нерегулярное событие"
+        
+        // Настройка внешнего вида навбара
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .systemBackground
+        appearance.shadowColor = .clear // убираем линию под навбаром
+        
+        // Шрифт и цвет заголовка
+        appearance.titleTextAttributes = [
+            .font: UIFont.systemFont(ofSize: 16, weight: .medium),
+            .foregroundColor: UIColor.label
+        ]
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        
         setupLayout()
         textField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
         
-        // Добавляем жест для скрытия клавиатуры
         let tapGesture = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
         view.addGestureRecognizer(tapGesture)
     }
     
     // MARK: - Layout
     private func setupLayout() {
-        view.addSubview(titleLabel)
         view.addSubview(textField)
-        view.addSubview(categoryCell)
-        if trackerType == .habit {
-            view.addSubview(scheduleCell)
-        }
-        view.addSubview(cancelButton)
-        view.addSubview(createButton)
+        view.addSubview(containerView)
         
-        categoryCell.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(categoryView)
+        categoryView.addSubview(categoryLabel)
+        categoryView.addSubview(categoryDetailLabel)
+        categoryView.addSubview(categoryArrowImageView)
+        
         if trackerType == .habit {
-            scheduleCell.translatesAutoresizingMaskIntoConstraints = false
+            containerView.addSubview(separatorView)
+            containerView.addSubview(scheduleView)
+            scheduleView.addSubview(scheduleLabel)
+            scheduleView.addSubview(scheduleDetailLabel)
+            scheduleView.addSubview(scheduleArrowImageView)
         }
         
-        // Констрейнты
+        buttonStackView.addArrangedSubview(cancelButton)
+        buttonStackView.addArrangedSubview(createButton)
+        view.addSubview(buttonStackView)
+        
+        // Отключаем автоматическую трансляцию для всех элементов, кроме тех, что уже в стеке
+        [textField, containerView, categoryView, categoryLabel, categoryDetailLabel, categoryArrowImageView,
+         separatorView, scheduleView, scheduleLabel, scheduleDetailLabel, scheduleArrowImageView,
+         buttonStackView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        buttonStackView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
-            textField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
+            // Поле ввода
+            textField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
             textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             textField.heightAnchor.constraint(equalToConstant: 50),
             
-            // Категория
-            categoryCell.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
-            categoryCell.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            categoryCell.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            categoryCell.heightAnchor.constraint(equalToConstant: 50),
-        ])
-        
-        if trackerType == .habit {
-            NSLayoutConstraint.activate([
-                scheduleCell.topAnchor.constraint(equalTo: categoryCell.bottomAnchor, constant: 0),
-                scheduleCell.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                scheduleCell.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                scheduleCell.heightAnchor.constraint(equalToConstant: 50),
-            ])
-        }
-        
-        let bottomButtonsTopAnchor = trackerType == .habit ? scheduleCell.bottomAnchor : categoryCell.bottomAnchor
-        
-        NSLayoutConstraint.activate([
-            cancelButton.topAnchor.constraint(equalTo: bottomButtonsTopAnchor, constant: 24),
-            cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            cancelButton.trailingAnchor.constraint(equalTo: view.centerXAnchor, constant: -8),
-            cancelButton.heightAnchor.constraint(equalToConstant: 60),
+            // Контейнер (категория + расписание)
+            containerView.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
+            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            containerView.heightAnchor.constraint(equalToConstant: trackerType == .habit ? 150 : 75),
             
-            createButton.topAnchor.constraint(equalTo: cancelButton.topAnchor),
-            createButton.leadingAnchor.constraint(equalTo: view.centerXAnchor, constant: 8),
-            createButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            createButton.heightAnchor.constraint(equalToConstant: 60),
+            // Категория
+            categoryView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            categoryView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            categoryView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            categoryView.heightAnchor.constraint(equalToConstant: 75),
+            
+            categoryLabel.topAnchor.constraint(equalTo: categoryView.topAnchor, constant: 11),
+            categoryLabel.leadingAnchor.constraint(equalTo: categoryView.leadingAnchor, constant: 16),
+            
+            categoryDetailLabel.topAnchor.constraint(equalTo: categoryLabel.bottomAnchor, constant: 2),
+            categoryDetailLabel.leadingAnchor.constraint(equalTo: categoryLabel.leadingAnchor),
+            categoryDetailLabel.trailingAnchor.constraint(lessThanOrEqualTo: categoryArrowImageView.leadingAnchor, constant: -8),
+            
+            categoryArrowImageView.trailingAnchor.constraint(equalTo: categoryView.trailingAnchor, constant: -16),
+            categoryArrowImageView.centerYAnchor.constraint(equalTo: categoryView.centerYAnchor),
+            categoryArrowImageView.widthAnchor.constraint(equalToConstant: 20),
+            categoryArrowImageView.heightAnchor.constraint(equalToConstant: 20),
+            
+            // Разделитель
+            separatorView.topAnchor.constraint(equalTo: categoryView.bottomAnchor),
+            separatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            separatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            separatorView.heightAnchor.constraint(equalToConstant: 1),
+            
+            // Расписание
+            scheduleView.topAnchor.constraint(equalTo: separatorView.bottomAnchor),
+            scheduleView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            scheduleView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            scheduleView.heightAnchor.constraint(equalToConstant: 74),
+            scheduleView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            
+            scheduleLabel.topAnchor.constraint(equalTo: scheduleView.topAnchor, constant: 11),
+            scheduleLabel.leadingAnchor.constraint(equalTo: scheduleView.leadingAnchor, constant: 16),
+            
+            scheduleDetailLabel.topAnchor.constraint(equalTo: scheduleLabel.bottomAnchor, constant: 2),
+            scheduleDetailLabel.leadingAnchor.constraint(equalTo: scheduleLabel.leadingAnchor),
+            scheduleDetailLabel.trailingAnchor.constraint(lessThanOrEqualTo: scheduleArrowImageView.leadingAnchor, constant: -8),
+            
+            scheduleArrowImageView.trailingAnchor.constraint(equalTo: scheduleView.trailingAnchor, constant: -16),
+            scheduleArrowImageView.centerYAnchor.constraint(equalTo: scheduleView.centerYAnchor),
+            scheduleArrowImageView.widthAnchor.constraint(equalToConstant: 20),
+            scheduleArrowImageView.heightAnchor.constraint(equalToConstant: 20),
         ])
         
-        // Добавляем обработчики для ячеек
-        let categoryTap = UITapGestureRecognizer(target: self, action: #selector(categoryTapped))
-        categoryCell.addGestureRecognizer(categoryTap)
-        
-        if trackerType == .habit {
-            let scheduleTap = UITapGestureRecognizer(target: self, action: #selector(scheduleTapped))
-            scheduleCell.addGestureRecognizer(scheduleTap)
-        }
+        // Стек кнопок
+        NSLayoutConstraint.activate([
+            buttonStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            buttonStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            buttonStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -34),
+        ])
     }
     
     // MARK: - Actions
@@ -181,7 +299,6 @@ final class NewTrackerViewController: UIViewController {
     }
     
     @objc private func categoryTapped() {
-        // Пока ничего не делаем
         print("Категория нажата")
     }
     
@@ -197,17 +314,13 @@ final class NewTrackerViewController: UIViewController {
     
     @objc private func createButtonTapped() {
         guard let name = textField.text, !name.isEmpty else { return }
-        
-        // Создаём трекер
         let tracker = Tracker(
             id: UUID(),
             name: name,
-            color: "YP Blue", // временно используем дефолтный цвет
-            emoji: "😎",      // временно используем дефолтный эмодзи
+            color: "YP Blue",
+            emoji: "😎",
             schedule: trackerType == .habit ? selectedDays : nil
         )
-        
-        // Передаём в делегат
         delegate?.didCreateTracker(tracker, inCategory: selectedCategory)
         dismiss(animated: true)
     }
@@ -217,17 +330,15 @@ final class NewTrackerViewController: UIViewController {
 extension NewTrackerViewController: ScheduleViewControllerDelegate {
     func didSelectSchedule(days: [Weekday]) {
         selectedDays = days
-        // Обновляем отображение в ячейке
         if days.count == 7 {
-            scheduleCell.detailTextLabel?.text = "Каждый день"
+            scheduleDetailLabel.text = "Каждый день"
         } else {
             let dayNames = days.map { $0.shortName }.joined(separator: ", ")
-            scheduleCell.detailTextLabel?.text = dayNames
+            scheduleDetailLabel.text = dayNames
         }
     }
 }
 
-// Добавим shortName для Weekday
 extension Weekday {
     var shortName: String {
         switch self {

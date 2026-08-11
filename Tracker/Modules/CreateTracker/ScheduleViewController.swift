@@ -19,9 +19,14 @@ final class ScheduleViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.isScrollEnabled = false
+        tableView.rowHeight = 75
         tableView.separatorStyle = .singleLine
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        tableView.separatorColor = .separator
         tableView.layer.cornerRadius = 16
         tableView.clipsToBounds = true
+        tableView.backgroundColor = .systemGray6
+        tableView.tableFooterView = UIView()
         return tableView
     }()
     
@@ -47,6 +52,8 @@ final class ScheduleViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         navigationItem.title = "Расписание"
+        navigationItem.hidesBackButton = true
+        
         setupLayout()
     }
     
@@ -59,16 +66,14 @@ final class ScheduleViewController: UIViewController {
         tableView.delegate = self
         
         NSLayoutConstraint.activate([
-            // Таблица с днями недели
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.heightAnchor.constraint(equalToConstant: CGFloat(days.count * 44)),
+            tableView.heightAnchor.constraint(equalToConstant: 525), 
             
-            // Кнопка "Готово" внизу экрана
-            doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-            doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
+            doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -34),
             doneButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
@@ -89,7 +94,12 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let day = days[indexPath.row]
-        cell.textLabel?.text = day.fullName 
+        cell.textLabel?.text = day.fullName
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        cell.textLabel?.textColor = .label
+        cell.backgroundColor = .clear
+        cell.selectionStyle = .none
+        cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
         let switchView = UISwitch()
         switchView.isOn = selectedDays.contains(day)
@@ -112,7 +122,7 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
-// Расширение для Weekday, чтобы получить полное название на русском
+// Расширение для Weekday (полное название на русском)
 extension Weekday {
     var fullName: String {
         switch self {
