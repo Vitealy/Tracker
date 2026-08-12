@@ -12,7 +12,7 @@ final class StatisticsViewController: UIViewController {
     // MARK: - UI Elements
     private lazy var emptyImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "Crying_FaceEmoji")
+        imageView.image = UIImage(resource: .cryingFaceEmoji)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         return imageView
@@ -22,7 +22,7 @@ final class StatisticsViewController: UIViewController {
         let label = UILabel()
         label.text = "Анализировать пока нечего"
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textColor = UIColor(named: "Black") ?? .black
+        label.textColor = UIColor(resource: .ypBlack)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -48,7 +48,7 @@ final class StatisticsViewController: UIViewController {
         ]
         appearance.largeTitleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 34, weight: .bold),
-            .foregroundColor: UIColor(named: "Black") ?? .black
+            .foregroundColor: UIColor(resource: .ypBlack)
         ]
         
         navigationController?.navigationBar.standardAppearance = appearance

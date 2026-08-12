@@ -26,12 +26,12 @@ final class MainTabBarController: UITabBarController {
         // Настраиваем иконки для вкладок (пока используем системные)
         trackersNav.tabBarItem = UITabBarItem(
             title: "Трекеры",
-            image: UIImage(named: "Trackers"),
+            image: UIImage(resource: .trackers),
             tag: 0
         )
         statisticsNav.tabBarItem = UITabBarItem(
             title: "Статистика",
-            image: UIImage(named: "Statistics"),
+            image: UIImage(resource: .statistics),
             tag: 1
         )
         
