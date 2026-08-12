@@ -132,7 +132,7 @@ final class NewTrackerViewController: UIViewController {
         button.backgroundColor = .systemGray6
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside) // self — это экземпляр, предупреждение анализатора не влияет на работу
         return button
     }()
     
@@ -144,7 +144,7 @@ final class NewTrackerViewController: UIViewController {
         button.layer.cornerRadius = 16
         button.isEnabled = false
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside) // self — это экземпляр, предупреждение анализатора не влияет на работу
         return button
     }()
     
@@ -160,8 +160,9 @@ final class NewTrackerViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        nil
     }
     
     // MARK: - Lifecycle
@@ -217,7 +218,7 @@ final class NewTrackerViewController: UIViewController {
         buttonStackView.addArrangedSubview(createButton)
         view.addSubview(buttonStackView)
         
-        // Отключаем автоматическую трансляцию для всех элементов, кроме тех, что уже в стеке
+        // Отключаем автоматическую трансляцию
         [textField, containerView, categoryView, categoryLabel, categoryDetailLabel, categoryArrowImageView,
          separatorView, scheduleView, scheduleLabel, scheduleDetailLabel, scheduleArrowImageView,
          buttonStackView].forEach {
@@ -226,20 +227,18 @@ final class NewTrackerViewController: UIViewController {
         
         buttonStackView.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
+        // Базовые констрейнты (общие для .habit и .irregular)
         NSLayoutConstraint.activate([
-            // Поле ввода
-            textField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            textField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 58),
             textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             textField.heightAnchor.constraint(equalToConstant: 50),
             
-            // Контейнер (категория + расписание)
             containerView.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
             containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             containerView.heightAnchor.constraint(equalToConstant: trackerType == .habit ? 150 : 75),
             
-            // Категория
             categoryView.topAnchor.constraint(equalTo: containerView.topAnchor),
             categoryView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             categoryView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
@@ -257,38 +256,38 @@ final class NewTrackerViewController: UIViewController {
             categoryArrowImageView.widthAnchor.constraint(equalToConstant: 20),
             categoryArrowImageView.heightAnchor.constraint(equalToConstant: 20),
             
-            // Разделитель
-            separatorView.topAnchor.constraint(equalTo: categoryView.bottomAnchor),
-            separatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
-            separatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
-            separatorView.heightAnchor.constraint(equalToConstant: 1),
-            
-            // Расписание
-            scheduleView.topAnchor.constraint(equalTo: separatorView.bottomAnchor),
-            scheduleView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            scheduleView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            scheduleView.heightAnchor.constraint(equalToConstant: 74),
-            scheduleView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            
-            scheduleLabel.topAnchor.constraint(equalTo: scheduleView.topAnchor, constant: 11),
-            scheduleLabel.leadingAnchor.constraint(equalTo: scheduleView.leadingAnchor, constant: 16),
-            
-            scheduleDetailLabel.topAnchor.constraint(equalTo: scheduleLabel.bottomAnchor, constant: 2),
-            scheduleDetailLabel.leadingAnchor.constraint(equalTo: scheduleLabel.leadingAnchor),
-            scheduleDetailLabel.trailingAnchor.constraint(lessThanOrEqualTo: scheduleArrowImageView.leadingAnchor, constant: -8),
-            
-            scheduleArrowImageView.trailingAnchor.constraint(equalTo: scheduleView.trailingAnchor, constant: -16),
-            scheduleArrowImageView.centerYAnchor.constraint(equalTo: scheduleView.centerYAnchor),
-            scheduleArrowImageView.widthAnchor.constraint(equalToConstant: 20),
-            scheduleArrowImageView.heightAnchor.constraint(equalToConstant: 20),
-        ])
-        
-        // Стек кнопок
-        NSLayoutConstraint.activate([
             buttonStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             buttonStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             buttonStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -34),
         ])
+        
+        // Констрейнты только для привычки (расписание и разделитель)
+        if trackerType == .habit {
+            NSLayoutConstraint.activate([
+                separatorView.topAnchor.constraint(equalTo: categoryView.bottomAnchor),
+                separatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+                separatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+                separatorView.heightAnchor.constraint(equalToConstant: 1),
+                
+                scheduleView.topAnchor.constraint(equalTo: separatorView.bottomAnchor),
+                scheduleView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                scheduleView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                scheduleView.heightAnchor.constraint(equalToConstant: 74),
+                scheduleView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+                
+                scheduleLabel.topAnchor.constraint(equalTo: scheduleView.topAnchor, constant: 11),
+                scheduleLabel.leadingAnchor.constraint(equalTo: scheduleView.leadingAnchor, constant: 16),
+                
+                scheduleDetailLabel.topAnchor.constraint(equalTo: scheduleLabel.bottomAnchor, constant: 2),
+                scheduleDetailLabel.leadingAnchor.constraint(equalTo: scheduleLabel.leadingAnchor),
+                scheduleDetailLabel.trailingAnchor.constraint(lessThanOrEqualTo: scheduleArrowImageView.leadingAnchor, constant: -8),
+                
+                scheduleArrowImageView.trailingAnchor.constraint(equalTo: scheduleView.trailingAnchor, constant: -16),
+                scheduleArrowImageView.centerYAnchor.constraint(equalTo: scheduleView.centerYAnchor),
+                scheduleArrowImageView.widthAnchor.constraint(equalToConstant: 20),
+                scheduleArrowImageView.heightAnchor.constraint(equalToConstant: 20),
+            ])
+        }
     }
     
     // MARK: - Actions
@@ -339,16 +338,3 @@ extension NewTrackerViewController: ScheduleViewControllerDelegate {
     }
 }
 
-extension Weekday {
-    var shortName: String {
-        switch self {
-        case .monday: return "Пн"
-        case .tuesday: return "Вт"
-        case .wednesday: return "Ср"
-        case .thursday: return "Чт"
-        case .friday: return "Пт"
-        case .saturday: return "Сб"
-        case .sunday: return "Вс"
-        }
-    }
-}

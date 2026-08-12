@@ -35,7 +35,7 @@ final class TrackersViewController: UIViewController {
     
     private let placeholderImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "Star_1")
+        imageView.image = UIImage(resource: .star1)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -44,7 +44,7 @@ final class TrackersViewController: UIViewController {
         let label = UILabel()
         label.text = "Что будем отслеживать?"
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textColor = UIColor(named: "YP Gray") ?? .gray
+        label.textColor = UIColor(resource: .ypGray)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -221,7 +221,7 @@ final class TrackersViewController: UIViewController {
     
     private func updateFilteredCategories(for date: Date) {
         let calendar = Calendar.current
-        let weekday = calendar.component(.weekday, from: date)
+        _ = calendar.component(.weekday, from: date)
         
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ru_RU")
@@ -337,7 +337,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         let isCompleted = completedTrackerIdsForCurrentDate.contains(tracker.id)
         
         // Будущая ли дата?
-        let isFutureDate = calendar.isDateInTomorrow(currentDate) // проще: если дата больше сегодняшней
+        _ = calendar.isDateInTomorrow(currentDate) // проще: если дата больше сегодняшней
         // Более точная проверка: если currentDate > текущая дата (начало дня)
         let today = Date()
         let isFuture = currentDate > today

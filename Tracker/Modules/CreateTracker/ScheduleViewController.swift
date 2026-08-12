@@ -34,7 +34,7 @@ final class ScheduleViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("Готово", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = UIColor(named: "YP Black") ?? .black
+        button.backgroundColor = UIColor(resource: .ypBlack)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -122,17 +122,4 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
-// Расширение для Weekday (полное название на русском)
-extension Weekday {
-    var fullName: String {
-        switch self {
-        case .monday: return "Понедельник"
-        case .tuesday: return "Вторник"
-        case .wednesday: return "Среда"
-        case .thursday: return "Четверг"
-        case .friday: return "Пятница"
-        case .saturday: return "Суббота"
-        case .sunday: return "Воскресенье"
-        }
-    }
-}
+
