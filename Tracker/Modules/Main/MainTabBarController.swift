@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 final class MainTabBarController: UITabBarController {
     
@@ -15,8 +16,13 @@ final class MainTabBarController: UITabBarController {
     }
     
     private func setupTabs() {
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let trackerStore = TrackerStore(context: context)
+        let categoryStore = TrackerCategoryStore(context: context)
+        let recordStore = TrackerRecordStore(context: context)
+
+        let trackersVC = TrackersViewController(trackerStore: trackerStore, categoryStore: categoryStore, recordStore: recordStore)
         // Создаём вью-контроллеры для каждой вкладки
-        let trackersVC = TrackersViewController()
         let statisticsVC = StatisticsViewController()
         
         // Оборачиваем их в навигационные контроллеры

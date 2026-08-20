@@ -13,6 +13,10 @@ protocol TrackersViewControllerDelegate: AnyObject {
 
 final class TrackersViewController: UIViewController {
     
+    private let trackerStore: TrackerStore
+    private let categoryStore: TrackerCategoryStore
+    private let recordStore: TrackerRecordStore
+    
     // MARK: - UI Elements
 
     private lazy var datePicker: UIDatePicker = {
@@ -52,9 +56,9 @@ final class TrackersViewController: UIViewController {
     // MARK: - Data Properties
     
     private var categories: [TrackerCategory] = []
-    private var completedTrackers: [TrackerRecord] = []
     private var completedTrackerIdsForCurrentDate: Set<UUID> = []
     private var currentDate: Date = Date() // текущая выбранная дата
+    
     
     // Отфильтрованные категории для отображения
     private var filteredCategories: [TrackerCategory] = [] {
@@ -62,6 +66,17 @@ final class TrackersViewController: UIViewController {
             updatePlaceholderVisibility()
             collectionView.reloadData()
         }
+    }
+    
+    init(trackerStore: TrackerStore, categoryStore: TrackerCategoryStore, recordStore: TrackerRecordStore) {
+        self.trackerStore = trackerStore
+        self.categoryStore = categoryStore
+        self.recordStore = recordStore
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - Lifecycle
@@ -72,12 +87,18 @@ final class TrackersViewController: UIViewController {
         setupNavigationBar()
         setupCollectionView()
         setupPlaceholder()
-        //        addTestData()
         // Обновляем трекеры для текущей даты
         updateFilteredCategories(for: currentDate)
+        loadData()
     }
     
     // MARK: - Private Methods
+    
+    private func loadData() {
+        categories = categoryStore.fetchAllCategories()
+        // completedTrackers пока не загружаем, будем получать по дате
+        updateFilteredCategories(for: currentDate)
+    }
     
     private func setupNavigationBar() {
         // Настраиваем внешний вид заголовка
@@ -177,47 +198,10 @@ final class TrackersViewController: UIViewController {
     }
     
     private func updateCompletedTrackerIdsForCurrentDate() {
-        let calendar = Calendar.current
-        completedTrackerIdsForCurrentDate = Set(
-            completedTrackers
-                .filter { calendar.isDate($0.date, inSameDayAs: currentDate) }
-                .map { $0.trackerId }
-        )
+        completedTrackerIdsForCurrentDate = recordStore.fetchRecordIds(for: currentDate)
     }
     
     // MARK: - Data Management
-    
-    private func addTestData() {
-        // Создаём несколько тестовых трекеров
-        let tracker1 = Tracker(
-            id: UUID(),
-            name: "Пить воду",
-            color: "YP Blue",
-            emoji: "💧",
-            schedule: [.monday, .wednesday, .friday]
-        )
-        
-        let tracker2 = Tracker(
-            id: UUID(),
-            name: "Читать книгу",
-            color: "YP Red",
-            emoji: "📚",
-            schedule: Weekday.allCases // все дни
-        )
-        
-        let tracker3 = Tracker(
-            id: UUID(),
-            name: "Нерегулярное событие",
-            color: "YP Green",
-            emoji: "🎉",
-            schedule: nil // нерегулярное
-        )
-        
-        let category1 = TrackerCategory(title: "Здоровье", trackers: [tracker1])
-        let category2 = TrackerCategory(title: "Развитие", trackers: [tracker2, tracker3])
-        
-        categories = [category1, category2]
-    }
     
     private func updateFilteredCategories(for date: Date) {
         let calendar = Calendar.current
@@ -290,22 +274,23 @@ final class TrackersViewController: UIViewController {
     // MARK: - Logic: Toggle completion
     
     private func toggleTrackerCompletion(for trackerId: UUID) {
-        // Проверяем, можно ли отметить (не будущая дата)
+
         let calendar = Calendar.current
         if calendar.isDateInToday(currentDate) || currentDate < Date() {
-            // Если сегодня или прошлая дата, можно менять
-            if let index = completedTrackers.firstIndex(where: { $0.trackerId == trackerId && calendar.isDate($0.date, inSameDayAs: currentDate) }) {
-                // Удаляем запись (снимаем отметку)
-                completedTrackers.remove(at: index)
-            } else {
-                // Добавляем запись
-                let record = TrackerRecord(trackerId: trackerId, date: currentDate)
-                completedTrackers.append(record)
+            do {
+                if recordStore.isTrackerCompleted(trackerId: trackerId, date: currentDate) {
+                    // Если уже выполнено – снимаем отметку
+                    try recordStore.removeRecord(for: trackerId, date: currentDate)
+                } else {
+                    // Отмечаем как выполненное
+                    try recordStore.addRecord(for: trackerId, date: currentDate)
+                }
+                // Обновляем UI
+                updateFilteredCategories(for: currentDate)
+            } catch {
+                print("Ошибка изменения отметки: \(error)")
             }
-            updateCompletedTrackerIdsForCurrentDate()
-            collectionView.reloadData()
         } else {
-            // Будущая дата – нельзя отметить
             print("Нельзя отметить трекер на будущую дату")
         }
     }
@@ -330,7 +315,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         }
         
         let tracker = filteredCategories[indexPath.section].trackers[indexPath.row]
-        let daysCount = completedTrackers.filter { $0.trackerId == tracker.id }.count
+        let daysCount = recordStore.fetchRecords(for: tracker.id).count
         
         // Проверяем, отмечен ли трекер на текущую дату
         let calendar = Calendar.current
@@ -433,22 +418,17 @@ extension TrackersViewController: TrackerCellDelegate {
 
 extension TrackersViewController: TrackersViewControllerDelegate {
     func didCreateTracker(_ tracker: Tracker, inCategory categoryTitle: String) {
-        if let index = categories.firstIndex(where: { $0.title == categoryTitle }) {
-            // Создаём обновлённую категорию
-            let updatedCategory = TrackerCategory(
-                title: categories[index].title,
-                trackers: categories[index].trackers + [tracker]
-            )
-            // Создаём новый массив категорий
-            var updatedCategories = categories
-            updatedCategories[index] = updatedCategory
-            categories = updatedCategories
-        } else {
-            // Создаём новую категорию
-            let newCategory = TrackerCategory(title: categoryTitle, trackers: [tracker])
-            categories.append(newCategory)
+
+        do {
+            // Добавляем трекер в Core Data
+            // Сначала найдём или создадим категорию
+            let category = TrackerCategory(title: categoryTitle, trackers: [tracker])
+            try trackerStore.addTracker(tracker, in: category)
+            // Перезагружаем данные
+            loadData()
+        } catch {
+            print("Ошибка сохранения трекера: \(error)")
         }
-        updateFilteredCategories(for: currentDate)
     }
 }
 
