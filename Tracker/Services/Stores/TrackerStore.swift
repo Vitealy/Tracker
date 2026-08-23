@@ -30,11 +30,16 @@ final class TrackerStore {
         trackerCoreData.name = tracker.name
         trackerCoreData.color = tracker.color
         trackerCoreData.emoji = tracker.emoji
-        trackerCoreData.schedule = tracker.schedule?.map { $0.rawValue }.joined(separator: ",") // сохраняем как строку "Пн,Вт,Ср"
+        let scheduleString = tracker.schedule?.map { $0.rawValue }.joined(separator: ",")
+        trackerCoreData.schedule = scheduleString // сохраняем как строку "Пн,Вт,Ср"
         trackerCoreData.category = categoryCoreData
+        
+        print("📅 Сохраняемое расписание: \(scheduleString ?? "nil")")
         
         // 3. Сохраняем контекст
         try context.save()
+        context.processPendingChanges()
+        print("✅ Трекер сохранён: \(tracker.name), schedule: \(scheduleString ?? "nil")")
     }
     
     // MARK: - Получение всех трекеров
@@ -87,6 +92,54 @@ final class TrackerStore {
         try context.save()
     }
     
+    func fetchedResultsController(for date: Date) -> NSFetchedResultsController<TrackerCoreData> {
+        let fetchRequest = TrackerCoreData.fetchRequest()
+        fetchRequest.includesPendingChanges = true
+        // Сортировка: сначала по категории, затем по имени
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "category.title", ascending: true),
+            NSSortDescriptor(key: "name", ascending: true)
+        ]
+        
+        // Получаем название дня недели для текущей даты (например, "Пн")
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ru_RU")
+        dateFormatter.dateFormat = "EEEE"
+        let weekdayString = dateFormatter.string(from: date).lowercased() // "понедельник"
+        // Приводим к формату, который хранится в schedule (например, "Пн")
+        let weekdayShort: String = {
+            switch weekdayString {
+            case "понедельник": return "Пн"
+            case "вторник": return "Вт"
+            case "среда": return "Ср"
+            case "четверг": return "Чт"
+            case "пятница": return "Пт"
+            case "суббота": return "Сб"
+            case "воскресенье": return "Вс"
+            default: return ""
+            }
+        }()
+        
+        // Предикат: показываем трекеры, у которых расписание содержит этот день ИЛИ расписание отсутствует (нерегулярные)
+        let predicate = NSPredicate(format: "schedule == nil OR schedule CONTAINS[c] %@", weekdayShort)
+        fetchRequest.predicate = predicate
+        
+        let fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: "category.title", // группировка по названию категории
+            cacheName: nil
+        )
+        
+        try? fetchedResultsController.performFetch()
+        print("🔍 Найдено объектов после fetch: \(fetchedResultsController.fetchedObjects?.count ?? 0)")
+        return fetchedResultsController
+    }
+    
+    func refreshContext() {
+        context.refreshAllObjects()
+    }
+    
     // MARK: - Конвертация Core Data → структура Tracker
     
     private func tracker(from coreData: TrackerCoreData) -> Tracker? {
@@ -107,4 +160,5 @@ final class TrackerStore {
             schedule: schedule
         )
     }
+    
 }

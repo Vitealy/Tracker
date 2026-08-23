@@ -6,16 +6,13 @@
 //
 
 import UIKit
+import CoreData
 
 protocol TrackersViewControllerDelegate: AnyObject {
     func didCreateTracker(_ tracker: Tracker, inCategory categoryTitle: String)
 }
 
 final class TrackersViewController: UIViewController {
-    
-    private let trackerStore: TrackerStore
-    private let categoryStore: TrackerCategoryStore
-    private let recordStore: TrackerRecordStore
     
     // MARK: - UI Elements
 
@@ -55,18 +52,11 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Data Properties
     
-    private var categories: [TrackerCategory] = []
-    private var completedTrackerIdsForCurrentDate: Set<UUID> = []
+    private let trackerStore: TrackerStore
+    private let categoryStore: TrackerCategoryStore
+    private let recordStore: TrackerRecordStore
+    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>?
     private var currentDate: Date = Date() // текущая выбранная дата
-    
-    
-    // Отфильтрованные категории для отображения
-    private var filteredCategories: [TrackerCategory] = [] {
-        didSet {
-            updatePlaceholderVisibility()
-            collectionView.reloadData()
-        }
-    }
     
     init(trackerStore: TrackerStore, categoryStore: TrackerCategoryStore, recordStore: TrackerRecordStore) {
         self.trackerStore = trackerStore
@@ -87,18 +77,10 @@ final class TrackersViewController: UIViewController {
         setupNavigationBar()
         setupCollectionView()
         setupPlaceholder()
-        // Обновляем трекеры для текущей даты
-        updateFilteredCategories(for: currentDate)
-        loadData()
+        updateFetchedResultsController(for: currentDate)
     }
     
     // MARK: - Private Methods
-    
-    private func loadData() {
-        categories = categoryStore.fetchAllCategories()
-        // completedTrackers пока не загружаем, будем получать по дате
-        updateFilteredCategories(for: currentDate)
-    }
     
     private func setupNavigationBar() {
         // Настраиваем внешний вид заголовка
@@ -115,7 +97,7 @@ final class TrackersViewController: UIViewController {
         // Крупный заголовок (Large Title)
         appearance.largeTitleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 34, weight: .bold),
-            .foregroundColor: UIColor(named: "YP Black") ?? .black
+            .foregroundColor: UIColor(resource: .ypBlack)
         ]
         
         // Применяем для стандартного и компактного (для скролла) состояний
@@ -197,62 +179,58 @@ final class TrackersViewController: UIViewController {
         ])
     }
     
-    private func updateCompletedTrackerIdsForCurrentDate() {
-        completedTrackerIdsForCurrentDate = recordStore.fetchRecordIds(for: currentDate)
-    }
-    
-    // MARK: - Data Management
-    
-    private func updateFilteredCategories(for date: Date) {
-        let calendar = Calendar.current
-        _ = calendar.component(.weekday, from: date)
+    private func updateFetchedResultsController(for date: Date) {
+        trackerStore.refreshContext() 
+        fetchedResultsController = trackerStore.fetchedResultsController(for: date)
         
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ru_RU")
         dateFormatter.dateFormat = "EEEE"
-        let weekdayName = dateFormatter.string(from: date).lowercased()
-        
-        let weekdayEnum: Weekday? = {
-            switch weekdayName {
-            case "понедельник": return .monday
-            case "вторник": return .tuesday
-            case "среда": return .wednesday
-            case "четверг": return .thursday
-            case "пятница": return .friday
-            case "суббота": return .saturday
-            case "воскресенье": return .sunday
-            default: return nil
+        let weekdayString = dateFormatter.string(from: date).lowercased()
+        let weekdayShort: String = {
+            switch weekdayString {
+            case "понедельник": return "Пн"
+            case "вторник": return "Вт"
+            case "среда": return "Ср"
+            case "четверг": return "Чт"
+            case "пятница": return "Пт"
+            case "суббота": return "Сб"
+            case "воскресенье": return "Вс"
+            default: return ""
             }
         }()
-        
-        guard let weekdayEnum = weekdayEnum else {
-            filteredCategories = []
-            return
+        print("📅 Текущий день: \(weekdayShort)")
+        let allTrackers = trackerStore.fetchAllTrackers()
+        print("🔍 Всего трекеров в базе: \(allTrackers.count)")
+        fetchedResultsController?.delegate = self
+        do {
+            try fetchedResultsController?.performFetch()
+            collectionView.reloadData()
+            updatePlaceholderVisibility()
+        } catch {
+            print("Ошибка выполнения запроса: \(error)")
         }
-        
-        // Фильтруем категории и трекеры
-        let newCategories = categories.compactMap { category -> TrackerCategory? in
-            let filteredTrackers = category.trackers.filter { tracker in
-                if let schedule = tracker.schedule {
-                    // Если есть расписание, проверяем, содержит ли оно нужный день
-                    return schedule.contains(weekdayEnum)
-                } else {
-                    // Нерегулярное событие (без расписания) показываем всегда
-                    return true
-                }
-            }
-            if filteredTrackers.isEmpty {
-                return nil
-            }
-            return TrackerCategory(title: category.title, trackers: filteredTrackers)
-        }
-        filteredCategories = newCategories
-        
-        updateCompletedTrackerIdsForCurrentDate()
+        print("🔍 Обновление FRC для даты: \(date)")
+        let objects = fetchedResultsController?.fetchedObjects?.count ?? 0
+        print("🔍 Найдено объектов: \(objects)")
     }
     
+    private func convertToTracker(from coreData: TrackerCoreData) -> Tracker {
+        let id = coreData.id ?? UUID()
+        let name = coreData.name ?? ""
+        let color = coreData.color ?? "Color_1"
+        let emoji = coreData.emoji ?? "🙂"
+        let schedule: [Weekday]? = coreData.schedule?
+            .split(separator: ",")
+            .compactMap { Weekday(rawValue: String($0)) }
+        
+        return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule)
+    }
+    
+    // MARK: - Data Management
+    
     private func updatePlaceholderVisibility() {
-        let isEmpty = filteredCategories.isEmpty
+        let isEmpty = fetchedResultsController?.fetchedObjects?.isEmpty ?? true
         placeholderImageView.isHidden = !isEmpty
         placeholderLabel.isHidden = !isEmpty
         collectionView.isHidden = isEmpty
@@ -268,31 +246,27 @@ final class TrackersViewController: UIViewController {
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         currentDate = sender.date
-        updateFilteredCategories(for: currentDate)
+        updateFetchedResultsController(for: currentDate)
     }
     
     // MARK: - Logic: Toggle completion
     
     private func toggleTrackerCompletion(for trackerId: UUID) {
-
         let calendar = Calendar.current
         if calendar.isDateInToday(currentDate) || currentDate < Date() {
             do {
                 if recordStore.isTrackerCompleted(trackerId: trackerId, date: currentDate) {
-                    // Если уже выполнено – снимаем отметку
                     try recordStore.removeRecord(for: trackerId, date: currentDate)
                 } else {
-                    // Отмечаем как выполненное
                     try recordStore.addRecord(for: trackerId, date: currentDate)
                 }
-                // Обновляем UI
-                updateFilteredCategories(for: currentDate)
             } catch {
                 print("Ошибка изменения отметки: \(error)")
             }
         } else {
             print("Нельзя отметить трекер на будущую дату")
         }
+        collectionView.reloadData()
     }
     
 }
@@ -302,11 +276,11 @@ final class TrackersViewController: UIViewController {
 extension TrackersViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return filteredCategories.count
+        return fetchedResultsController?.sections?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return filteredCategories[section].trackers.count
+        return fetchedResultsController?.sections?[section].numberOfObjects ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -314,18 +288,14 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        let tracker = filteredCategories[indexPath.section].trackers[indexPath.row]
+        guard let trackerCoreData = fetchedResultsController?.object(at: indexPath) else {
+            return UICollectionViewCell()
+        }
+        
+        let tracker = convertToTracker(from: trackerCoreData) // вспомогательный метод
         let daysCount = recordStore.fetchRecords(for: tracker.id).count
-        
-        // Проверяем, отмечен ли трекер на текущую дату
-        let calendar = Calendar.current
-        let isCompleted = completedTrackerIdsForCurrentDate.contains(tracker.id)
-        
-        // Будущая ли дата?
-        _ = calendar.isDateInTomorrow(currentDate) // проще: если дата больше сегодняшней
-        // Более точная проверка: если currentDate > текущая дата (начало дня)
-        let today = Date()
-        let isFuture = currentDate > today
+        let isCompleted = recordStore.isTrackerCompleted(trackerId: tracker.id, date: currentDate)
+        let isFuture = currentDate > Date()
         
         cell.delegate = self
         cell.configure(
@@ -340,8 +310,6 @@ extension TrackersViewController: UICollectionViewDataSource {
     
     // Заголовки секций (категории)
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        
-        // Проверяем, что это хедер
         guard kind == UICollectionView.elementKindSectionHeader else {
             return UICollectionReusableView()
         }
@@ -353,19 +321,15 @@ extension TrackersViewController: UICollectionViewDataSource {
             for: indexPath
         )
         
-        // Настраиваем внешний вид хедера
-        let category = filteredCategories[indexPath.section]
-        view.backgroundColor = .clear
+        let sectionInfo = fetchedResultsController?.sections?[indexPath.section]
+        let categoryTitle = sectionInfo?.name ?? ""
         
-        // Добавляем UILabel с названием категории
-        let label = UILabel()
-        label.text = category.title
-        label.font = UIFont.systemFont(ofSize: 19, weight: .bold)
-        label.textColor = UIColor(named: "YP Black") ?? .black
-        label.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Удаляем старые subviews, если они есть
         view.subviews.forEach { $0.removeFromSuperview() }
+        let label = UILabel()
+        label.text = categoryTitle
+        label.font = UIFont.systemFont(ofSize: 19, weight: .bold)
+        label.textColor = UIColor(resource: .ypBlack)
+        label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         
         NSLayoutConstraint.activate([
@@ -418,14 +382,11 @@ extension TrackersViewController: TrackerCellDelegate {
 
 extension TrackersViewController: TrackersViewControllerDelegate {
     func didCreateTracker(_ tracker: Tracker, inCategory categoryTitle: String) {
-
         do {
-            // Добавляем трекер в Core Data
-            // Сначала найдём или создадим категорию
             let category = TrackerCategory(title: categoryTitle, trackers: [tracker])
             try trackerStore.addTracker(tracker, in: category)
-            // Перезагружаем данные
-            loadData()
+            print("✅ didCreateTracker вызван для трекера: \(tracker.name)")
+            updateFetchedResultsController(for: currentDate)
         } catch {
             print("Ошибка сохранения трекера: \(error)")
         }
@@ -440,6 +401,58 @@ extension TrackersViewController: TrackerTypeViewControllerDelegate {
             newTrackerVC.delegate = self
             let navController = UINavigationController(rootViewController: newTrackerVC)
             self.present(navController, animated: true)
+        }
+    }
+}
+
+extension TrackersViewController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        collectionView.performBatchUpdates(nil, completion: nil)
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        updatePlaceholderVisibility()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange anObject: Any,
+                    at indexPath: IndexPath?,
+                    for type: NSFetchedResultsChangeType,
+                    newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            if let newIndexPath = newIndexPath {
+                collectionView.insertItems(at: [newIndexPath])
+            }
+        case .delete:
+            if let indexPath = indexPath {
+                collectionView.deleteItems(at: [indexPath])
+            }
+        case .update:
+            if let indexPath = indexPath {
+                collectionView.reloadItems(at: [indexPath])
+            }
+        case .move:
+            if let indexPath = indexPath, let newIndexPath = newIndexPath {
+                collectionView.moveItem(at: indexPath, to: newIndexPath)
+            }
+        @unknown default:
+            break
+        }
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange sectionInfo: NSFetchedResultsSectionInfo,
+                    atSectionIndex sectionIndex: Int,
+                    for type: NSFetchedResultsChangeType) {
+        let indexSet = IndexSet(integer: sectionIndex)
+        switch type {
+        case .insert:
+            collectionView.insertSections(indexSet)
+        case .delete:
+            collectionView.deleteSections(indexSet)
+        default:
+            break
         }
     }
 }
