@@ -26,7 +26,10 @@ final class ScheduleViewController: UIViewController {
         tableView.layer.cornerRadius = 16
         tableView.clipsToBounds = true
         tableView.backgroundColor = .systemGray6
-        tableView.tableFooterView = UIView()
+        
+        // Убираем верхнюю и нижнюю линии, установив минимальную высоту для header/footer
+        tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0.01))
+        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0.01))
         return tableView
     }()
     
@@ -53,7 +56,6 @@ final class ScheduleViewController: UIViewController {
         view.backgroundColor = .systemBackground
         navigationItem.title = "Расписание"
         navigationItem.hidesBackButton = true
-        
         setupLayout()
     }
     
@@ -69,7 +71,7 @@ final class ScheduleViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.heightAnchor.constraint(equalToConstant: 525), 
+            tableView.heightAnchor.constraint(equalToConstant: 525),
             
             doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -99,7 +101,6 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
         cell.textLabel?.textColor = .label
         cell.backgroundColor = .clear
         cell.selectionStyle = .none
-        cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
         let switchView = UISwitch()
         switchView.isOn = selectedDays.contains(day)
@@ -121,5 +122,3 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
         }
     }
 }
-
-

@@ -41,6 +41,7 @@ final class NewTrackerViewController: UIViewController {
     private let textField: UITextField = {
         let field = UITextField()
         field.placeholder = "Введите название трекера"
+        field.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         field.backgroundColor = .systemGray6
         field.layer.cornerRadius = 16
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
@@ -197,25 +198,29 @@ final class NewTrackerViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Отменить", for: .normal)
-        button.setTitleColor(.systemRed, for: .normal)
-        button.backgroundColor = .systemGray6
-        button.layer.cornerRadius = 16
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-        return button
+            button.setTitle("Отменить", for: .normal)
+            button.setTitleColor(UIColor(resource: .ypRed), for: .normal)
+            button.backgroundColor = .systemBackground
+            button.layer.borderWidth = 1
+            button.layer.borderColor = UIColor(resource: .ypRed).cgColor
+            button.layer.cornerRadius = 16
+            button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+            return button
     }()
     
     private let createButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Создать", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .systemGray
-        button.layer.cornerRadius = 16
-        button.isEnabled = false
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
-        return button
+            button.setTitle("Создать", for: .normal)
+            button.setTitleColor(.white, for: .normal)
+            button.backgroundColor = UIColor(resource: .ypGray)
+            button.layer.cornerRadius = 16
+            button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+            button.isEnabled = false
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
+            return button
     }()
     
     // MARK: - Properties
@@ -466,7 +471,7 @@ final class NewTrackerViewController: UIViewController {
         let text = textField.text ?? ""
         let isFormValid = !text.isEmpty && selectedEmoji != nil && selectedColor != nil
         createButton.isEnabled = isFormValid
-        createButton.backgroundColor = isFormValid ? .systemBlue : .systemGray
+        createButton.backgroundColor = isFormValid ? UIColor(resource: .ypBlack) : UIColor(resource: .ypGray)
     }
     
     @objc private func categoryTapped() {
@@ -592,7 +597,7 @@ final class EmojiCell: UICollectionViewCell {
 final class ColorCell: UICollectionViewCell {
     private let colorView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 16
+        view.layer.cornerRadius = 8
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -607,7 +612,7 @@ final class ColorCell: UICollectionViewCell {
             colorView.widthAnchor.constraint(equalToConstant: 40),
             colorView.heightAnchor.constraint(equalToConstant: 40)
         ])
-        contentView.layer.cornerRadius = 20
+        contentView.layer.cornerRadius = 8
         contentView.clipsToBounds = false
     }
     

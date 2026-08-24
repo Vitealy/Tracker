@@ -23,7 +23,6 @@ final class TrackerRecordStore {
         let request = TrackerRecordCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "trackerId == %@ AND date == %@", trackerId as CVarArg, date as CVarArg)
         if let existing = try? context.fetch(request).first {
-            // Если запись уже существует, ничего не делаем (или обновляем, но это не нужно)
             return
         }
         let record = TrackerRecordCoreData(context: context)
@@ -56,7 +55,9 @@ final class TrackerRecordStore {
     func fetchRecordIds(for date: Date) -> Set<UUID> {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
+            return []
+        }
         let request = TrackerRecordCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "date >= %@ AND date < %@", startOfDay as CVarArg, endOfDay as CVarArg)
         guard let results = try? context.fetch(request) else { return [] }
@@ -68,7 +69,9 @@ final class TrackerRecordStore {
     func isTrackerCompleted(trackerId: UUID, date: Date) -> Bool {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
+            return false
+        }
         let request = TrackerRecordCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "trackerId == %@ AND date >= %@ AND date < %@", trackerId as CVarArg, startOfDay as CVarArg, endOfDay as CVarArg)
         guard let count = try? context.count(for: request) else { return false }

@@ -140,6 +140,18 @@ final class TrackerStore {
         context.refreshAllObjects()
     }
     
+    func convertToTracker(from coreData: TrackerCoreData) -> Tracker {
+        let id = coreData.id ?? UUID()
+        let name = coreData.name ?? ""
+        let color = coreData.color ?? "Color_1"
+        let emoji = coreData.emoji ?? "🙂"
+        let schedule: [Weekday]? = coreData.schedule?
+            .split(separator: ",")
+            .compactMap { Weekday(rawValue: String($0)) }
+        
+        return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule)
+    }
+    
     // MARK: - Конвертация Core Data → структура Tracker
     
     private func tracker(from coreData: TrackerCoreData) -> Tracker? {
