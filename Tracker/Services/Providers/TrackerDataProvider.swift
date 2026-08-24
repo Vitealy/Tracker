@@ -46,7 +46,7 @@ final class TrackerDataProvider: NSObject, TrackerDataProviderProtocol {
     func titleForSection(at index: Int) -> String {
         guard let sections = fetchedResultsController.sections,
               index < sections.count else { return "" }
-        return sections[index].name ?? ""
+        return sections[index].name
     }
     
     func performFetch() {

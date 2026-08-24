@@ -206,7 +206,7 @@ final class NewTrackerViewController: UIViewController {
             button.layer.cornerRadius = 16
             button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
             button.translatesAutoresizingMaskIntoConstraints = false
-            button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+            button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside) // self — экземпляр класса, предупреждение анализатора можно игнорировать.
             return button
     }()
     
@@ -219,7 +219,7 @@ final class NewTrackerViewController: UIViewController {
             button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
             button.isEnabled = false
             button.translatesAutoresizingMaskIntoConstraints = false
-            button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
+            button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside) // self — экземпляр класса, предупреждение анализатора можно игнорировать.
             return button
     }()
     
