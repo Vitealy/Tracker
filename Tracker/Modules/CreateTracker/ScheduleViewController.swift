@@ -25,7 +25,7 @@ final class ScheduleViewController: UIViewController {
         tableView.separatorColor = .separator
         tableView.layer.cornerRadius = 16
         tableView.clipsToBounds = true
-        tableView.backgroundColor = .systemGray6
+        tableView.backgroundColor = UIColor(resource: .grayLight)
         
         // Убираем верхнюю и нижнюю линии, установив минимальную высоту для header/footer
         tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0.01))

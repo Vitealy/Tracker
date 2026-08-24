@@ -42,7 +42,7 @@ final class NewTrackerViewController: UIViewController {
         let field = UITextField()
         field.placeholder = "Введите название трекера"
         field.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        field.backgroundColor = .systemGray6
+        field.backgroundColor = UIColor(resource: .grayLight)
         field.layer.cornerRadius = 16
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
         field.leftViewMode = .always
@@ -54,7 +54,7 @@ final class NewTrackerViewController: UIViewController {
     // MARK: - Блок "Категория + Расписание"
     private lazy var containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemGray6
+        view.backgroundColor = UIColor(resource: .grayLight)
         view.layer.cornerRadius = 16
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -336,7 +336,7 @@ final class NewTrackerViewController: UIViewController {
             textField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
             textField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             textField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            textField.heightAnchor.constraint(equalToConstant: 50),
+            textField.heightAnchor.constraint(equalToConstant: 75),
             
             containerView.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
             containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
