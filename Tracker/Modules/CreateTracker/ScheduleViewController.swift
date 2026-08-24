@@ -88,7 +88,7 @@ final class ScheduleViewController: UIViewController {
 }
 
 // MARK: - UITableViewDataSource & Delegate
-extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
+extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return days.count
     }
@@ -119,6 +119,20 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
             }
         } else {
             selectedDays.removeAll { $0 == day }
+        }
+    }
+}
+
+// MARK: - UITableViewDelegate
+extension ScheduleViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // Проверяем, последняя ли это ячейка (индекс равен количеству дней минус 1)
+        if indexPath.row == days.count - 1 {
+            // Сдвигаем разделитель за правый край таблицы, делая его невидимым
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        } else {
+            // Для всех остальных ячеек оставляем отступы как в макете (16 слева и справа)
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         }
     }
 }
