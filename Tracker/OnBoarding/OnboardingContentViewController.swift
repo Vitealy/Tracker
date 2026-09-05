@@ -51,7 +51,7 @@ final class OnboardingContentViewController: UIViewController {
         // 📌 Настройка текста с переносом на 2 строки
         label.numberOfLines = 2
         label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.5               // ✅ разрешаем уменьшать до 50% (16 pt)
+        label.minimumScaleFactor = 0.5
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         
@@ -89,11 +89,10 @@ final class OnboardingContentViewController: UIViewController {
             imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            // Текст – ширина 343, высота автоматическая (без фиксации)
+            // Текст
             label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             label.widthAnchor.constraint(equalToConstant: 343),
             label.topAnchor.constraint(equalTo: view.topAnchor, constant: 432),
-            // ⚠️ Убираем heightAnchor, чтобы label сам определял высоту
             
             // Кнопка
             button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),

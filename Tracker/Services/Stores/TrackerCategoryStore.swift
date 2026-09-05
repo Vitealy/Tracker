@@ -75,4 +75,14 @@ final class TrackerCategoryStore {
         context.delete(object)
         try context.save()
     }
+    
+    // MARK: - Обновление категории
+    func updateCategory(oldTitle: String, newTitle: String) throws {
+        let request = TrackerCategoryCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "title == %@", oldTitle)
+        guard let category = try? context.fetch(request).first else { return }
+        category.title = newTitle
+        try context.save()
+    }
+
 }
