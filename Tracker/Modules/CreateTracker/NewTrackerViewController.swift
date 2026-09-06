@@ -225,13 +225,15 @@ final class NewTrackerViewController: UIViewController {
     
     // MARK: - Properties
     private let trackerType: TrackerType
+    private let categoryStore: TrackerCategoryStore
     private var selectedCategory: String = "Важное"
     private var selectedDays: [Weekday] = Weekday.allCases
     weak var delegate: TrackersViewControllerDelegate?
     
     // MARK: - Init
-    init(trackerType: TrackerType) {
+    init(trackerType: TrackerType, categoryStore: TrackerCategoryStore) {
         self.trackerType = trackerType
+        self.categoryStore = categoryStore
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -475,7 +477,15 @@ final class NewTrackerViewController: UIViewController {
     }
     
     @objc private func categoryTapped() {
-        print("Категория нажата")
+        let viewModel = CategoryViewModel(categoryStore: categoryStore)
+        let categoryVC = CategoryViewController(viewModel: viewModel)
+        categoryVC.onCategorySelected = { [weak self] category in
+            self?.selectedCategory = category
+            self?.categoryDetailLabel.text = category
+            self?.categoryDetailLabel.textColor = .gray
+        }
+        let navController = UINavigationController(rootViewController: categoryVC)
+        present(navController, animated: true)
     }
     
     @objc private func scheduleTapped() {

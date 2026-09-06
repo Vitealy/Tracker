@@ -346,7 +346,10 @@ extension TrackersViewController: TrackerTypeViewControllerDelegate {
     func didSelectTrackerType(_ type: TrackerType) {
         dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
-            let newTrackerVC = NewTrackerViewController(trackerType: type)
+            let newTrackerVC = NewTrackerViewController(
+                trackerType: type,
+                categoryStore: self.categoryStore 
+            )
             newTrackerVC.delegate = self
             let navController = UINavigationController(rootViewController: newTrackerVC)
             self.present(navController, animated: true)
