@@ -30,11 +30,11 @@ final class DeleteConfirmationViewController: UIViewController {
     }()
     
     private let topBlurEffectView: UIVisualEffectView = {
-            let blurEffect = UIBlurEffect(style: .systemChromeMaterial)
-            let view = UIVisualEffectView(effect: blurEffect)
-            view.translatesAutoresizingMaskIntoConstraints = false
-            return view
-        }()
+        let blurEffect = UIBlurEffect(style: .systemChromeMaterial)
+        let view = UIVisualEffectView(effect: blurEffect)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
     private let messageLabel: UILabel = {
         let label = UILabel()

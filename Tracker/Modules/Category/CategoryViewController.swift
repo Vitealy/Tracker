@@ -82,7 +82,6 @@ final class CategoryViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .systemBackground
         navigationItem.title = "Категория"
-        navigationItem.hidesBackButton = false
         
         view.addSubview(tableView)
         view.addSubview(addButton)
@@ -187,14 +186,19 @@ extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let category = viewModel.category(at: indexPath.row)
         viewModel.selectCategory(at: indexPath.row)
-        onCategorySelected?(category)   // 👈 передаём выбранную категорию
-        dismiss(animated: true)        // 👈 закрываем после выбора
+        onCategorySelected?(category)
+        dismiss(animated: true)
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == viewModel.numberOfCategories() - 1 {
             // Скрываем разделитель для последней ячейки
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+            cell.separatorInset = UIEdgeInsets(
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: .greatestFiniteMagnitude
+            )
         } else {
             // Стандартные отступы для остальных ячеек
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)

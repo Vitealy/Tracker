@@ -31,17 +31,16 @@ final class CategoryViewModel {
     func loadCategories() {
         let fetched = categoryStore.fetchAllCategories()
         if fetched.isEmpty {
-            // добавить дефолтные
-            let defaultCategories = ["Важное", "Радостные мелочи", "Самочувствие", "Привычки", "Внимательность", "Спорт"]
-            for title in defaultCategories {
-                _ = try? categoryStore.getOrCreateCategory(with: title)
+            // Добавляем категории по умолчанию
+            do {
+                for title in CategoryConstants.defaultCategories {
+                    _ = try categoryStore.getOrCreateCategory(with: title)
+                }
+            } catch {
+                onError?("Не удалось добавить категории по умолчанию")
             }
-            // снова загрузить
-            let updated = categoryStore.fetchAllCategories()
-            categories = updated.map { $0.title }
-        } else {
-            categories = fetched.map { $0.title }
         }
+        categories = categoryStore.fetchAllCategories().map { $0.title }
         onCategoriesUpdated?()
     }
     
