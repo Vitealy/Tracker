@@ -38,7 +38,7 @@ final class DeleteConfirmationViewController: UIViewController {
     
     private let messageLabel: UILabel = {
         let label = UILabel()
-        label.text = "Эта категория точно не нужна?"
+        label.text = NSLocalizedString("category.delete.message", comment: "Сообщение подтверждения удаления категории")
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         label.textColor = UIColor(resource: .ypGray)
         label.textAlignment = .center
@@ -55,7 +55,7 @@ final class DeleteConfirmationViewController: UIViewController {
     
     private let deleteButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Удалить", for: .normal)
+        button.setTitle(NSLocalizedString("category.delete.button", comment: "Кнопка удаления"), for: .normal)
         button.setTitleColor(UIColor(resource: .ypRed2), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .regular)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -75,7 +75,7 @@ final class DeleteConfirmationViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Отменить", for: .normal)
+        button.setTitle(NSLocalizedString("category.cancel.button", comment: "Кнопка отмены"), for: .normal)
         button.setTitleColor(UIColor(resource: .ypBlue2), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         button.translatesAutoresizingMaskIntoConstraints = false

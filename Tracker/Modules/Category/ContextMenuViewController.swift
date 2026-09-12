@@ -40,7 +40,7 @@ final class ContextMenuViewController: UIViewController {
     
     private let editButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Редактировать", for: .normal)
+        button.setTitle(NSLocalizedString("category.context.edit", comment: "Редактировать категорию"), for: .normal)
         button.setTitleColor(UIColor(resource: .ypBlack), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -50,7 +50,7 @@ final class ContextMenuViewController: UIViewController {
     
     private let deleteButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Удалить", for: .normal)
+        button.setTitle(NSLocalizedString("category.context.delete", comment: "Удалить категорию"), for: .normal)
         button.setTitleColor(UIColor(resource: .ypRed2), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         button.translatesAutoresizingMaskIntoConstraints = false

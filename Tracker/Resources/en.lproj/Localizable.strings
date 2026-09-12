@@ -1,0 +1,92 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Vitaly Kashavkin on 11.09.2026.
+  
+*/
+
+// MARK: - Onboarding
+"onboarding.button.title" = "That's technology!";
+"onboarding.page1.title" = "Track only\nwhat you want";
+"onboarding.page2.title" = "Even if it's not\nliters of water and yoga";
+
+// MARK: - TabBar
+"tabbar.trackers" = "Trackers";
+"tabbar.statistics" = "Statistics";
+
+// MARK: - Trackers
+"trackers.title" = "Trackers";
+"trackers.placeholder" = "What will we track?";
+
+// MARK: - Statistics
+"statistics.title" = "Statistics";
+"statistics.placeholder" = "Nothing to analyze yet";
+
+// MARK: - Category
+"category.title" = "Category";
+"category.add.button" = "Add category";
+"category.new.title" = "New category";
+"category.edit.title" = "Edit category";
+"category.textfield.placeholder" = "Enter category name";
+"category.done.button" = "Done";
+"category.delete.message" = "Are you sure you don't need this category?";
+"category.delete.button" = "Delete";
+"category.cancel.button" = "Cancel";
+"category.context.edit" = "Edit";
+"category.context.delete" = "Delete";
+"category.error.add" = "Failed to add category";
+"category.error.update" = "Failed to update category";
+"category.error.delete" = "Failed to delete category";
+
+// MARK: - Category Default Names
+"category.default.important" = "Important";
+"category.default.joyful" = "Little Joys";
+"category.default.wellbeing" = "Wellbeing";
+"category.default.habits" = "Habits";
+"category.default.mindfulness" = "Mindfulness";
+"category.default.sport" = "Sport";
+
+// MARK: - New Tracker
+"tracker.new.habit" = "New habit";
+"tracker.new.irregular" = "New irregular event";
+"tracker.textfield.placeholder" = "Enter tracker name";
+"tracker.section.category" = "Category";
+"tracker.section.schedule" = "Schedule";
+"tracker.schedule.everyday" = "Every day";
+"tracker.schedule.everyDay" = "Every day";
+"tracker.section.emoji" = "Emoji";
+"tracker.section.color" = "Color";
+"tracker.cancel.button" = "Cancel";
+"tracker.create.button" = "Create";
+
+// MARK: - Tracker Type
+"tracker.type.title" = "Create tracker";
+"tracker.type.habit" = "Habit";
+"tracker.type.irregular" = "Irregular event";
+
+// MARK: - Schedule
+"schedule.title" = "Schedule";
+"schedule.done.button" = "Done";
+
+// MARK: - Weekdays
+"weekday.monday" = "Monday";
+"weekday.tuesday" = "Tuesday";
+"weekday.wednesday" = "Wednesday";
+"weekday.thursday" = "Thursday";
+"weekday.friday" = "Friday";
+"weekday.saturday" = "Saturday";
+"weekday.sunday" = "Sunday";
+
+// MARK: - Common
+"common.error.title" = "Error";
+"common.ok" = "OK";
+
+// MARK: - Weekdays - short names
+"weekday.monday.short" = "Mon";
+"weekday.tuesday.short" = "Tue";
+"weekday.wednesday.short" = "Wed";
+"weekday.thursday.short" = "Thu";
+"weekday.friday.short" = "Fri";
+"weekday.saturday.short" = "Sat";
+"weekday.sunday.short" = "Sun";

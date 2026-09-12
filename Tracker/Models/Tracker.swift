@@ -12,7 +12,7 @@ import UIKit
 struct Tracker {
     let id: UUID
     let name: String
-    let color: String 
+    let color: String
     let emoji: String
     let schedule: [Weekday]? // nil для нерегулярного события
 }
@@ -30,27 +30,37 @@ enum Weekday: String, CaseIterable {
 }
 // Расширение для Weekday (полное название на русском)
 extension Weekday {
-    var fullName: String {
+    
+    var localizationKey: String {
         switch self {
-        case .monday: return "Понедельник"
-        case .tuesday: return "Вторник"
-        case .wednesday: return "Среда"
-        case .thursday: return "Четверг"
-        case .friday: return "Пятница"
-        case .saturday: return "Суббота"
-        case .sunday: return "Воскресенье"
+        case .monday: return "weekday.monday"
+        case .tuesday: return "weekday.tuesday"
+        case .wednesday: return "weekday.wednesday"
+        case .thursday: return "weekday.thursday"
+        case .friday: return "weekday.friday"
+        case .saturday: return "weekday.saturday"
+        case .sunday: return "weekday.sunday"
         }
     }
     
-    var shortName: String {
+    /// Ключ локализации для короткого названия дня
+    var shortLocalizationKey: String {
         switch self {
-        case .monday: return "Пн"
-        case .tuesday: return "Вт"
-        case .wednesday: return "Ср"
-        case .thursday: return "Чт"
-        case .friday: return "Пт"
-        case .saturday: return "Сб"
-        case .sunday: return "Вс"
+        case .monday: return "weekday.monday.short"
+        case .tuesday: return "weekday.tuesday.short"
+        case .wednesday: return "weekday.wednesday.short"
+        case .thursday: return "weekday.thursday.short"
+        case .friday: return "weekday.friday.short"
+        case .saturday: return "weekday.saturday.short"
+        case .sunday: return "weekday.sunday.short"
         }
+    }
+    
+    var fullName: String {
+        return NSLocalizedString(localizationKey, comment: "Полное название дня недели")
+    }
+    
+    var shortName: String {
+        return NSLocalizedString(shortLocalizationKey, comment: "Короткое название дня недели")
     }
 }

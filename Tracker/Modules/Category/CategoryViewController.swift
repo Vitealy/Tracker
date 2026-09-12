@@ -30,7 +30,7 @@ final class CategoryViewController: UIViewController {
     
     private let addButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(NSLocalizedString("category.add.button", comment: "Кнопка добавления категории"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = UIColor(resource: .ypBlack)
@@ -81,7 +81,7 @@ final class CategoryViewController: UIViewController {
     // MARK: - Setup
     private func setupUI() {
         view.backgroundColor = .systemBackground
-        navigationItem.title = "Категория"
+        navigationItem.title = NSLocalizedString("category.title", comment: "Заголовок экрана категорий")
         
         view.addSubview(tableView)
         view.addSubview(addButton)
@@ -158,8 +158,15 @@ final class CategoryViewController: UIViewController {
     }
     
     private func showAlert(message: String) {
-        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        let alert = UIAlertController(
+            title: NSLocalizedString("common.error.title", comment: "Заголовок ошибки"),
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("common.ok", comment: "Кнопка OK"),
+            style: .default)
+        )
         present(alert, animated: true)
     }
 }
@@ -174,9 +181,10 @@ extension CategoryViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.reuseIdentifier, for: indexPath) as? CategoryCell else {
             return UITableViewCell()
         }
-        let title = viewModel.category(at: indexPath.row)
+        let titleKey = viewModel.category(at: indexPath.row)
+        let displayTitle = CategoryLocalization.displayTitle(for: titleKey)
         let isSelected = viewModel.isSelected(at: indexPath.row)
-        cell.configure(with: title, isSelected: isSelected)
+        cell.configure(with: displayTitle, isSelected: isSelected)
         return cell
     }
 }
@@ -184,9 +192,10 @@ extension CategoryViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let category = viewModel.category(at: indexPath.row)
+        let categoryKey = viewModel.category(at: indexPath.row)
+        let displayTitle = CategoryLocalization.displayTitle(for: categoryKey)
         viewModel.selectCategory(at: indexPath.row)
-        onCategorySelected?(category)
+        onCategorySelected?(categoryKey)
         dismiss(animated: true)
     }
     

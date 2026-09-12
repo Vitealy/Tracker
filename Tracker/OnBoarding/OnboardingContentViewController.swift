@@ -12,7 +12,7 @@ final class OnboardingContentViewController: UIViewController {
     // MARK: - Properties
     private let image: UIImage
     private let titleText: String
-    private let buttonTitle = "Вот это технологии!"
+    private let buttonTitle = NSLocalizedString("onboarding.button.title", comment: "Кнопка завершения онбординга")
     
     var onButtonTap: (() -> Void)?
     

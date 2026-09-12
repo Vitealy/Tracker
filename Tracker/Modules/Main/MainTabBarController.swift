@@ -11,8 +11,19 @@ final class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        migrateCategoriesIfNeeded()
         setupTabs()
         setupTabBarDivider()
+    }
+    
+    private func migrateCategoriesIfNeeded() {
+        let context = CoreDataManager.shared.context
+        let categoryStore = TrackerCategoryStore(context: context)
+        do {
+            try categoryStore.migrateDefaultCategoriesToKeys()
+        } catch {
+            print("❌ Ошибка миграции категорий: \(error)")
+        }
     }
     
     private func setupTabs() {
@@ -31,12 +42,12 @@ final class MainTabBarController: UITabBarController {
         
         // Настраиваем иконки для вкладок (пока используем системные)
         trackersNav.tabBarItem = UITabBarItem(
-            title: "Трекеры",
+            title: NSLocalizedString("tabbar.trackers", comment: "Название вкладки Трекеры"),
             image: UIImage(resource: .trackers),
             tag: 0
         )
         statisticsNav.tabBarItem = UITabBarItem(
-            title: "Статистика",
+            title: NSLocalizedString("tabbar.statistics", comment: "Название вкладки Статистика"),
             image: UIImage(resource: .statistics),
             tag: 1
         )

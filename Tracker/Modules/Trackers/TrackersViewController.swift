@@ -42,7 +42,7 @@ final class TrackersViewController: UIViewController {
     
     private let placeholderLabel: UILabel = {
         let label = UILabel()
-        label.text = "Что будем отслеживать?"
+        label.text = NSLocalizedString("trackers.placeholder", comment: "Заглушка при отсутствии трекеров")
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textColor = UIColor(resource: .ypGray)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -106,7 +106,7 @@ final class TrackersViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         
-        navigationItem.title = "Трекеры"
+        navigationItem.title = NSLocalizedString("trackers.title", comment: "Заголовок экрана трекеров")
         
         let addButton = UIBarButtonItem(
             image: UIImage(resource: .addTracker).withRenderingMode(.alwaysOriginal),
@@ -270,11 +270,12 @@ extension TrackersViewController: UICollectionViewDataSource {
             for: indexPath
         )
         
-        let categoryTitle = dataProvider?.titleForSection(at: indexPath.section) ?? ""
+        let categoryKey = dataProvider?.titleForSection(at: indexPath.section) ?? ""
+        let displayTitle = CategoryLocalization.displayTitle(for: categoryKey)
         
         view.subviews.forEach { $0.removeFromSuperview() }
         let label = UILabel()
-        label.text = categoryTitle
+        label.text = displayTitle
         label.font = UIFont.systemFont(ofSize: 19, weight: .bold)
         label.textColor = UIColor(resource: .ypBlack)
         label.translatesAutoresizingMaskIntoConstraints = false

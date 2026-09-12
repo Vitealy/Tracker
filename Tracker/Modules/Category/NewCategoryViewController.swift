@@ -17,7 +17,7 @@ final class NewCategoryViewController: UIViewController {
     // MARK: - UI Elements
     private let textField: UITextField = {
         let field = UITextField()
-        field.placeholder = "Введите название категории"
+        field.placeholder = NSLocalizedString("category.textfield.placeholder", comment: "Плейсхолдер поля ввода названия категории")
         field.backgroundColor = UIColor(resource: .grayLight)
         field.layer.cornerRadius = 16
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
@@ -31,7 +31,7 @@ final class NewCategoryViewController: UIViewController {
     
     private let doneButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(NSLocalizedString("category.done.button", comment: "Кнопка Готово"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = UIColor(resource: .ypBlack)
@@ -95,9 +95,9 @@ final class NewCategoryViewController: UIViewController {
         let title: String
         switch mode {
         case .add:
-            title = "Новая категория"
+            title = NSLocalizedString("category.new.title", comment: "Заголовок новой категории")
         case .edit:
-            title = "Редактирование категории"
+            title = NSLocalizedString("category.edit.title", comment: "Заголовок редактирования категории")
         }
         navigationItem.title = title
     }

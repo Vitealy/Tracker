@@ -118,7 +118,8 @@ final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Private Helpers
     private func pluralizeDays(_ count: Int) -> String {
-        return "\(count) \(getDaysWord(for: count))"
+        let format = NSLocalizedString("days.count", comment: "Количество дней, например: 5 дней")
+        return String.localizedStringWithFormat(format, count)
     }
     
     private func getDaysWord(for count: Int) -> String {

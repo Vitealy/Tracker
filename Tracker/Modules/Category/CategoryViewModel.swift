@@ -31,16 +31,14 @@ final class CategoryViewModel {
     func loadCategories() {
         let fetched = categoryStore.fetchAllCategories()
         if fetched.isEmpty {
-            // Добавляем категории по умолчанию
-            do {
-                for title in CategoryConstants.defaultCategories {
-                    _ = try categoryStore.getOrCreateCategory(with: title)
-                }
-            } catch {
-                onError?("Не удалось добавить категории по умолчанию")
+            for key in CategoryConstants.defaultCategoryKeys {
+                _ = try? categoryStore.getOrCreateCategory(with: key)
             }
+            let updated = categoryStore.fetchAllCategories()
+            categories = updated.map { $0.title }
+        } else {
+            categories = fetched.map { $0.title }
         }
-        categories = categoryStore.fetchAllCategories().map { $0.title }
         onCategoriesUpdated?()
     }
     
@@ -67,7 +65,7 @@ final class CategoryViewModel {
             _ = try categoryStore.getOrCreateCategory(with: category.title)
             loadCategories() // перезагружаем список
         } catch {
-            onError?("Не удалось добавить категорию")
+            onError?(NSLocalizedString("category.error.add", comment: "Ошибка добавления категории"))
         }
     }
     
@@ -77,7 +75,7 @@ final class CategoryViewModel {
             try categoryStore.updateCategory(oldTitle: oldName, newTitle: newName)
             loadCategories()
         } catch {
-            onError?("Не удалось обновить категорию")
+            onError?(NSLocalizedString("category.error.update", comment: "Ошибка обновления категории"))
         }
     }
     
@@ -87,7 +85,7 @@ final class CategoryViewModel {
             try categoryStore.deleteCategory(with: title)
             loadCategories()
         } catch {
-            onError?("Не удалось удалить категорию")
+            onError?(NSLocalizedString("category.error.delete", comment: "Ошибка удаления категории"))
         }
     }
 }

@@ -23,11 +23,11 @@ final class OnboardingViewController: UIPageViewController {
         // Создаём две страницы
         let firstPage = OnboardingContentViewController(
             image: UIImage(resource: .onboarding1),
-            titleText: "Отслеживайте только\nто, что хотите"
+            titleText: NSLocalizedString("onboarding.page1.title", comment: "Заголовок первой страницы онбординга")
         )
         let secondPage = OnboardingContentViewController(
             image: UIImage(resource: .onboarding2),
-            titleText: "Даже если это\nне литры воды и йога"
+            titleText: NSLocalizedString("onboarding.page2.title", comment: "Заголовок второй страницы онбординга")
         )
         
         // Замыкание для завершения онбординга
