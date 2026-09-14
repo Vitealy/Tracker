@@ -18,6 +18,7 @@
 // MARK: - Trackers
 "trackers.title" = "Трекеры";
 "trackers.placeholder" = "Что будем отслеживать?";
+"trackers.notFound" = "Ничего не найдено";
 
 // MARK: - Statistics
 "statistics.title" = "Статистика";
@@ -90,3 +91,7 @@
 "weekday.friday.short" = "Пт";
 "weekday.saturday.short" = "Сб";
 "weekday.sunday.short" = "Вс";
+
+// MARK: - Search
+"search.placeholder" = "Поиск";
+"search.cancel" = "Отменить";

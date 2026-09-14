@@ -17,6 +17,7 @@ protocol TrackerDataProviderProtocol: AnyObject {
     func titleForSection(at index: Int) -> String
     func performFetch()
     func refresh()
+    func updateSearchQuery(_ query: String)
 }
 
 /// Делегат для оповещения об изменениях данных (аналог NSFetchedResultsControllerDelegate)

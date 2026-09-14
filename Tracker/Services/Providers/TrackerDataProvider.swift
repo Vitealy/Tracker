@@ -12,11 +12,13 @@ import UIKit
 final class TrackerDataProvider: NSObject, TrackerDataProviderProtocol {
     weak var delegate: TrackerDataProviderDelegate?
     
-    private let fetchedResultsController: NSFetchedResultsController<TrackerCoreData>
+    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>
     private let trackerStore: TrackerStore
-    
+    private let date: Date
+
     init(date: Date, trackerStore: TrackerStore) {
         self.trackerStore = trackerStore
+        self.date = date
         self.fetchedResultsController = trackerStore.fetchedResultsController(for: date)
         super.init()
         self.fetchedResultsController.delegate = self
@@ -55,6 +57,14 @@ final class TrackerDataProvider: NSObject, TrackerDataProviderProtocol {
     
     func refresh() {
         trackerStore.refreshContext()
+        try? fetchedResultsController.performFetch()
+        delegate?.didChangeContent(self)
+    }
+    
+    func updateSearchQuery(_ query: String) {
+        fetchedResultsController.delegate = nil
+        fetchedResultsController = trackerStore.fetchedResultsController(for: date, searchQuery: query)
+        fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
         delegate?.didChangeContent(self)
     }

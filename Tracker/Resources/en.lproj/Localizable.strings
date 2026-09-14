@@ -18,6 +18,7 @@
 // MARK: - Trackers
 "trackers.title" = "Trackers";
 "trackers.placeholder" = "What will we track?";
+"trackers.notFound" = "Nothing found";
 
 // MARK: - Statistics
 "statistics.title" = "Statistics";
@@ -90,3 +91,7 @@
 "weekday.friday.short" = "Fri";
 "weekday.saturday.short" = "Sat";
 "weekday.sunday.short" = "Sun";
+
+// MARK: - Search
+"search.placeholder" = "Search";
+"search.cancel" = "Cancel";

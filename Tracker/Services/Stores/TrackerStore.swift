@@ -92,21 +92,20 @@ final class TrackerStore {
         try context.save()
     }
     
-    func fetchedResultsController(for date: Date) -> NSFetchedResultsController<TrackerCoreData> {
+    func fetchedResultsController(for date: Date, searchQuery: String = "") -> NSFetchedResultsController<TrackerCoreData> {
         let fetchRequest = TrackerCoreData.fetchRequest()
         fetchRequest.includesPendingChanges = true
-        // Сортировка: сначала по категории, затем по имени
+        
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(key: "category.title", ascending: true),
             NSSortDescriptor(key: "name", ascending: true)
         ]
         
-        // Получаем название дня недели для текущей даты (например, "Пн")
+        // Определяем текущий день недели
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ru_RU")
         dateFormatter.dateFormat = "EEEE"
-        let weekdayString = dateFormatter.string(from: date).lowercased() // "понедельник"
-        // Приводим к формату, который хранится в schedule (например, "Пн")
+        let weekdayString = dateFormatter.string(from: date).lowercased()
         let weekdayShort: String = {
             switch weekdayString {
             case "понедельник": return "Пн"
@@ -120,14 +119,22 @@ final class TrackerStore {
             }
         }()
         
-        // Предикат: показываем трекеры, у которых расписание содержит этот день ИЛИ расписание отсутствует (нерегулярные)
-        let predicate = NSPredicate(format: "schedule == nil OR schedule CONTAINS[c] %@", weekdayShort)
-        fetchRequest.predicate = predicate
+        // Базовый предикат: день недели подходит ИЛИ расписание отсутствует (нерегулярное событие)
+        var predicates: [NSPredicate] = [
+            NSPredicate(format: "schedule == nil OR schedule CONTAINS[c] %@", weekdayShort)
+        ]
+        
+        // Если есть поисковый запрос — фильтруем ещё и по имени трекера
+        if !searchQuery.isEmpty {
+            predicates.append(NSPredicate(format: "name CONTAINS[c] %@", searchQuery))
+        }
+        
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         
         let fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
-            sectionNameKeyPath: "category.title", // группировка по названию категории
+            sectionNameKeyPath: "category.title",
             cacheName: nil
         )
         

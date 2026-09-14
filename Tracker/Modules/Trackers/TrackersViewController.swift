@@ -19,8 +19,16 @@ final class TrackersViewController: UIViewController {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .compact
-        picker.locale = Locale(identifier: "ru_RU")
         return picker
+    }()
+    
+    /// Строка поиска — размещается вручную, а не в навбаре.
+    private let searchTextField: UISearchTextField = {
+        let field = UISearchTextField()
+        field.placeholder = NSLocalizedString("search.placeholder", comment: "Плейсхолдер поиска")
+        field.clearButtonMode = .whileEditing
+        field.translatesAutoresizingMaskIntoConstraints = false
+        return field
     }()
     
     private lazy var collectionView: UICollectionView = {
@@ -33,18 +41,40 @@ final class TrackersViewController: UIViewController {
         return collectionView
     }()
     
-    private let placeholderImageView: UIImageView = {
+    // MARK: - Placeholders
+    
+    /// Первая заглушка — когда трекеров вообще нет (стартовое состояние)
+    private let emptyImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(resource: .star1)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private let placeholderLabel: UILabel = {
+    private let emptyLabel: UILabel = {
         let label = UILabel()
         label.text = NSLocalizedString("trackers.placeholder", comment: "Заглушка при отсутствии трекеров")
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textColor = UIColor(resource: .ypGray)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    /// Вторая заглушка — когда поиск не дал результатов
+    private let notFoundImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(resource: .nothing)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private let notFoundLabel: UILabel = {
+        let label = UILabel()
+        label.text = NSLocalizedString("trackers.notFound", comment: "Заглушка при отсутствии результатов поиска")
+        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        label.textColor = UIColor(resource: .ypBlack)
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -56,6 +86,7 @@ final class TrackersViewController: UIViewController {
     private let recordStore: TrackerRecordStore
     private var dataProvider: TrackerDataProviderProtocol?
     private var currentDate: Date = Date()
+    private var currentSearchQuery: String = ""
     
     // MARK: - Init
     
@@ -77,12 +108,13 @@ final class TrackersViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setupNavigationBar()
+        setupSearchTextField()
         setupCollectionView()
-        setupPlaceholder()
+        setupPlaceholders()
         updateDataProvider(for: currentDate)
     }
     
-    // MARK: - Private Methods
+    // MARK: - Setup
     
     private func setupNavigationBar() {
         let appearance = UINavigationBarAppearance()
@@ -116,6 +148,7 @@ final class TrackersViewController: UIViewController {
         )
         navigationItem.leftBarButtonItem = addButton
         
+        // DatePicker
         let calendar = Calendar.current
         let currentDate = Date()
         let minDate = calendar.date(byAdding: .year, value: -10, to: currentDate)
@@ -124,7 +157,6 @@ final class TrackersViewController: UIViewController {
         datePicker.minimumDate = minDate
         datePicker.maximumDate = maxDate
         datePicker.date = currentDate
-        
         datePicker.addTarget(
             self,
             action: #selector(datePickerValueChanged(_:)),
@@ -132,6 +164,19 @@ final class TrackersViewController: UIViewController {
         )
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+    }
+    
+    /// Размещаем UISearchTextField вручную ниже навбара.
+    private func setupSearchTextField() {
+        view.addSubview(searchTextField)
+        searchTextField.addTarget(self, action: #selector(searchTextChanged(_:)), for: .editingChanged)
+        
+        NSLayoutConstraint.activate([
+            searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            searchTextField.heightAnchor.constraint(equalToConstant: 36)
+        ])
     }
     
     private func setupCollectionView() {
@@ -147,27 +192,43 @@ final class TrackersViewController: UIViewController {
         )
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 12),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
     }
     
-    private func setupPlaceholder() {
-        view.addSubview(placeholderImageView)
-        view.addSubview(placeholderLabel)
-        placeholderImageView.isHidden = true
-        placeholderLabel.isHidden = true
+    /// Настраиваем обе заглушки — они центрируются одинаково.
+    private func setupPlaceholders() {
+        view.addSubview(emptyImageView)
+        view.addSubview(emptyLabel)
+        view.addSubview(notFoundImageView)
+        view.addSubview(notFoundLabel)
+        
+        emptyImageView.isHidden = true
+        emptyLabel.isHidden = true
+        notFoundImageView.isHidden = true
+        notFoundLabel.isHidden = true
         
         NSLayoutConstraint.activate([
-            placeholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            placeholderImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -20),
-            placeholderImageView.widthAnchor.constraint(equalToConstant: 80),
-            placeholderImageView.heightAnchor.constraint(equalToConstant: 80),
+            // Заглушка "Пусто"
+            emptyImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -20),
+            emptyImageView.widthAnchor.constraint(equalToConstant: 80),
+            emptyImageView.heightAnchor.constraint(equalToConstant: 80),
             
-            placeholderLabel.topAnchor.constraint(equalTo: placeholderImageView.bottomAnchor, constant: 8),
-            placeholderLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyLabel.topAnchor.constraint(equalTo: emptyImageView.bottomAnchor, constant: 8),
+            emptyLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            // Заглушка "Ничего не найдено"
+            notFoundImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            notFoundImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -20),
+            notFoundImageView.widthAnchor.constraint(equalToConstant: 80),
+            notFoundImageView.heightAnchor.constraint(equalToConstant: 80),
+            
+            notFoundLabel.topAnchor.constraint(equalTo: notFoundImageView.bottomAnchor, constant: 8),
+            notFoundLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
@@ -181,10 +242,27 @@ final class TrackersViewController: UIViewController {
         updatePlaceholderVisibility()
     }
     
+    /// Показывает нужную заглушку в зависимости от контекста:
+    /// - Пусто и нет поиска → "Что будем отслеживать?"
+    /// - Пусто и есть поиск → "Ничего не найдено"
+    /// - Есть данные → скрыть всё
     private func updatePlaceholderVisibility() {
-        let isEmpty = dataProvider?.numberOfItems(in: 0) == 0 && dataProvider?.numberOfSections() == 0
-        placeholderImageView.isHidden = !isEmpty
-        placeholderLabel.isHidden = !isEmpty
+        let sectionsCount = dataProvider?.numberOfSections() ?? 0
+        let isEmpty = sectionsCount == 0
+        
+        let hasSearchQuery = !currentSearchQuery.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        
+        // Первая заглушка — только когда нет поискового запроса
+        let showEmptyPlaceholder = isEmpty && !hasSearchQuery
+        // Вторая заглушка — только когда есть поисковый запрос и результат пуст
+        let showNotFoundPlaceholder = isEmpty && hasSearchQuery
+        
+        emptyImageView.isHidden = !showEmptyPlaceholder
+        emptyLabel.isHidden = !showEmptyPlaceholder
+        
+        notFoundImageView.isHidden = !showNotFoundPlaceholder
+        notFoundLabel.isHidden = !showNotFoundPlaceholder
+        
         collectionView.isHidden = isEmpty
     }
     
@@ -196,8 +274,18 @@ final class TrackersViewController: UIViewController {
         present(typeVC, animated: true)
     }
     
+    /// Обрабатываем изменение текста в поиске.
+    @objc private func searchTextChanged(_ sender: UISearchTextField) {
+        currentSearchQuery = sender.text ?? ""
+        dataProvider?.updateSearchQuery(currentSearchQuery)
+    }
+    
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         currentDate = sender.date
+        // Сбрасываем поиск
+        searchTextField.text = ""
+        searchTextField.resignFirstResponder()
+        currentSearchQuery = ""
         updateDataProvider(for: currentDate)
     }
     
@@ -334,7 +422,6 @@ extension TrackersViewController: TrackersViewControllerDelegate {
         do {
             let category = TrackerCategory(title: categoryTitle, trackers: [tracker])
             try trackerStore.addTracker(tracker, in: category)
-            // DataProvider автоматически обновится через делегата
         } catch {
             print("Ошибка сохранения трекера: \(error)")
         }
@@ -349,7 +436,7 @@ extension TrackersViewController: TrackerTypeViewControllerDelegate {
             guard let self = self else { return }
             let newTrackerVC = NewTrackerViewController(
                 trackerType: type,
-                categoryStore: self.categoryStore 
+                categoryStore: self.categoryStore
             )
             newTrackerVC.delegate = self
             let navController = UINavigationController(rootViewController: newTrackerVC)
