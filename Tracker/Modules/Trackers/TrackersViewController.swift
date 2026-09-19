@@ -358,8 +358,9 @@ extension TrackersViewController: UICollectionViewDataSource {
             for: indexPath
         )
         
-        let categoryKey = dataProvider?.titleForSection(at: indexPath.section) ?? ""
-        let displayTitle = CategoryLocalization.displayTitle(for: categoryKey)
+//        let categoryKey = dataProvider?.titleForSection(at: indexPath.section) ?? ""
+//        let displayTitle = CategoryLocalization.displayTitle(for: categoryKey)
+        let displayTitle = dataProvider?.titleForSection(at: indexPath.section) ?? ""
         
         view.subviews.forEach { $0.removeFromSuperview() }
         let label = UILabel()
@@ -436,7 +437,8 @@ extension TrackersViewController: TrackerTypeViewControllerDelegate {
             guard let self = self else { return }
             let newTrackerVC = NewTrackerViewController(
                 trackerType: type,
-                categoryStore: self.categoryStore
+                categoryStore: self.categoryStore,
+                trackerStore: self.trackerStore
             )
             newTrackerVC.delegate = self
             let navController = UINavigationController(rootViewController: newTrackerVC)
@@ -451,5 +453,97 @@ extension TrackersViewController: TrackerDataProviderDelegate {
     func didChangeContent(_ provider: TrackerDataProviderProtocol) {
         collectionView.reloadData()
         updatePlaceholderVisibility()
+    }
+}
+
+// MARK: - UICollectionViewDelegate (Context Menu)
+
+extension TrackersViewController {
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfigurationForItemAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        guard let trackerId = dataProvider?.trackerId(at: indexPath) else { return nil }
+        let isPinned = dataProvider?.isPinned(at: indexPath) ?? false
+        
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ in
+            
+            // Пункт 1 — Закрепить/Открепить
+            let pinTitle = isPinned
+                ? NSLocalizedString("tracker.unpin", comment: "Открепить трекер")
+                : NSLocalizedString("tracker.pin", comment: "Закрепить трекер")
+            
+            let pinImage = UIImage(systemName: isPinned ? "pin.slash" : "pin")
+            let pinAction = UIAction(title: pinTitle, image: pinImage) { _ in
+                self?.togglePin(for: trackerId)
+            }
+            
+            // Пункт 2 — Редактировать
+            let editAction = UIAction(
+                title: NSLocalizedString("tracker.edit", comment: "Редактировать трекер"),
+                image: UIImage(systemName: "pencil")
+            ) { _ in
+                self?.editTracker(withId: trackerId)
+            }
+            
+            // Пункт 3 — Удалить (красный цвет)
+            let deleteAction = UIAction(
+                title: NSLocalizedString("tracker.delete", comment: "Удалить трекер"),
+                image: UIImage(systemName: "trash"),
+                attributes: .destructive // 👈 делает текст красным
+            ) { _ in
+                self?.deleteTracker(withId: trackerId)
+            }
+            
+            return UIMenu(children: [pinAction, editAction, deleteAction])
+        }
+    }
+}
+
+// MARK: - Actions
+
+extension TrackersViewController {
+    
+    private func togglePin(for trackerId: UUID) {
+        do {
+            try trackerStore.togglePin(for: trackerId)
+            dataProvider?.refresh() // пересобирает секции
+        } catch {
+            print("Ошибка закрепления: \(error)")
+        }
+    }
+    
+    private func editTracker(withId id: UUID) {
+        guard let tracker = trackerStore.fetchTracker(by: id) else { return }
+        
+        let newTrackerVC = NewTrackerViewController(
+            trackerType: tracker.schedule == nil ? .irregular : .habit,
+            categoryStore: categoryStore,
+            trackerStore: trackerStore,
+            trackerToEdit: tracker
+        )
+        newTrackerVC.delegate = self
+        let nav = UINavigationController(rootViewController: newTrackerVC)
+        present(nav, animated: true)
+    }
+    
+    private func deleteTracker(withId id: UUID) {
+        let deleteVC = DeleteConfirmationViewController()
+        
+        deleteVC.messageText = NSLocalizedString("tracker.delete.message", comment: "Сообщение подтверждения удаления трекера")
+        deleteVC.onConfirm = { [weak self] in
+            guard let self = self else { return }
+            do {
+                try self.trackerStore.deleteTracker(withId: id)
+                self.dataProvider?.refresh()
+            } catch {
+                print("Ошибка удаления: \(error)")
+            }
+        }
+        deleteVC.modalPresentationStyle = .overFullScreen
+        deleteVC.modalTransitionStyle = .crossDissolve
+        present(deleteVC, animated: true)
     }
 }

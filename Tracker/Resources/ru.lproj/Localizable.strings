@@ -60,6 +60,7 @@
 "tracker.section.color" = "Цвет";
 "tracker.cancel.button" = "Отменить";
 "tracker.create.button" = "Создать";
+"tracker.delete.message" = "Уверены что хотите удалить трекер?";
 
 // MARK: - Tracker Type
 "tracker.type.title" = "Создание трекера";
@@ -95,3 +96,12 @@
 // MARK: - Search
 "search.placeholder" = "Поиск";
 "search.cancel" = "Отменить";
+
+"category.pinned" = "Закрепленные";
+"tracker.pin" = "Закрепить";
+"tracker.unpin" = "Открепить";
+"tracker.edit" = "Редактировать";
+"tracker.delete" = "Удалить";
+"tracker.save.button" = "Сохранить";
+"tracker.edit.habit.title" = "Редактирование привычки";
+"tracker.edit.irregular.title" = "Редактирование события";

@@ -82,7 +82,8 @@ final class TrackerCategoryStore {
                     name: name,
                     color: color,
                     emoji: emoji,
-                    schedule: schedule
+                    schedule: schedule,
+                    categoryKey: title
                 )
             }
             

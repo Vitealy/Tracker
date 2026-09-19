@@ -1,21 +1,16 @@
-//
-//  TrackerDataProvider.swift
-//  Tracker
-//
-//  Created by Vitaly Kashavkin on 23.08.2026.
-//
-
 import CoreData
 import UIKit
 
-/// Реализация провайдера данных на основе NSFetchedResultsController.
 final class TrackerDataProvider: NSObject, TrackerDataProviderProtocol {
     weak var delegate: TrackerDataProviderDelegate?
     
     private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>
     private let trackerStore: TrackerStore
     private let date: Date
-
+    
+    /// Сгруппированные секции для отображения.
+    private var sectionData: [(title: String, trackers: [TrackerCoreData])] = []
+    
     init(date: Date, trackerStore: TrackerStore) {
         self.trackerStore = trackerStore
         self.date = date
@@ -23,41 +18,90 @@ final class TrackerDataProvider: NSObject, TrackerDataProviderProtocol {
         super.init()
         self.fetchedResultsController.delegate = self
         try? self.fetchedResultsController.performFetch()
+        computeSections()
     }
     
+    // MARK: - Секции
+    
+    private func computeSections() {
+        guard let objects = fetchedResultsController.fetchedObjects else {
+            sectionData = []
+            return
+        }
+        
+        var pinned: [TrackerCoreData] = []
+        var byCategory: [String: [TrackerCoreData]] = [:]
+        
+        for tracker in objects {
+            if tracker.isPinned {
+                pinned.append(tracker)
+            } else if let title = tracker.category?.title {
+                byCategory[title, default: []].append(tracker)
+            }
+        }
+        
+        var result: [(title: String, trackers: [TrackerCoreData])] = []
+        if !pinned.isEmpty {
+            let pinnedTitle = NSLocalizedString("category.pinned", comment: "Название раздела закреплённых")
+            result.append((title: pinnedTitle, trackers: pinned))
+        }
+        for (categoryKey, trackers) in byCategory.sorted(by: { $0.key < $1.key }) {
+            let displayTitle = CategoryLocalization.displayTitle(for: categoryKey) 
+            result.append((title: displayTitle, trackers: trackers))
+        }
+        sectionData = result
+    }
+    
+    // MARK: - TrackerDataProviderProtocol
+    
     func numberOfSections() -> Int {
-        return fetchedResultsController.sections?.count ?? 0
+        return sectionData.count
     }
     
     func numberOfItems(in section: Int) -> Int {
-        guard let sections = fetchedResultsController.sections,
-              section < sections.count else { return 0 }
-        return sections[section].numberOfObjects
+        guard section < sectionData.count else { return 0 }
+        return sectionData[section].trackers.count
     }
     
     func tracker(at indexPath: IndexPath) -> Tracker? {
-        guard let sections = fetchedResultsController.sections,
-              indexPath.section < sections.count,
-              indexPath.row < sections[indexPath.section].numberOfObjects else {
-            return nil
-        }
-        let coreData = fetchedResultsController.object(at: indexPath)
-        return trackerStore.convertToTracker(from: coreData)
+        guard indexPath.section < sectionData.count else { return nil }
+        let trackers = sectionData[indexPath.section].trackers
+        guard indexPath.row < trackers.count else { return nil }
+        return trackerStore.convertToTracker(from: trackers[indexPath.row])
     }
     
+    /// Возвращает ключ категории секции (для локализации заголовка).
+    /// Для «Закреплённые» возвращает уже локализованную строку — так проще.
     func titleForSection(at index: Int) -> String {
-        guard let sections = fetchedResultsController.sections,
-              index < sections.count else { return "" }
-        return sections[index].name
+        guard index < sectionData.count else { return "" }
+        return sectionData[index].title
+    }
+    
+    /// Возвращает id трекера по indexPath — для контекстного меню.
+    func trackerId(at indexPath: IndexPath) -> UUID? {
+        guard indexPath.section < sectionData.count else { return nil }
+        let trackers = sectionData[indexPath.section].trackers
+        guard indexPath.row < trackers.count else { return nil }
+        return trackers[indexPath.row].id
+    }
+    
+    /// Возвращает флаг «закреплён» для трекера — нужно для текста пункта меню.
+    func isPinned(at indexPath: IndexPath) -> Bool {
+        guard indexPath.section < sectionData.count else { return false }
+        let trackers = sectionData[indexPath.section].trackers
+        guard indexPath.row < trackers.count else { return false }
+        return trackers[indexPath.row].isPinned
     }
     
     func performFetch() {
         try? fetchedResultsController.performFetch()
+        computeSections()
     }
     
     func refresh() {
         trackerStore.refreshContext()
         try? fetchedResultsController.performFetch()
+        computeSections()
         delegate?.didChangeContent(self)
     }
     
@@ -66,13 +110,16 @@ final class TrackerDataProvider: NSObject, TrackerDataProviderProtocol {
         fetchedResultsController = trackerStore.fetchedResultsController(for: date, searchQuery: query)
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
+        computeSections()
         delegate?.didChangeContent(self)
     }
 }
 
 // MARK: - NSFetchedResultsControllerDelegate
+
 extension TrackerDataProvider: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        computeSections()
         delegate?.didChangeContent(self)
     }
 }

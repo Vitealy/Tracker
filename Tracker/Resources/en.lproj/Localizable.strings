@@ -60,6 +60,7 @@
 "tracker.section.color" = "Color";
 "tracker.cancel.button" = "Cancel";
 "tracker.create.button" = "Create";
+"tracker.delete.message" = "Are you sure you want to delete the tracker?";
 
 // MARK: - Tracker Type
 "tracker.type.title" = "Create tracker";
@@ -95,3 +96,12 @@
 // MARK: - Search
 "search.placeholder" = "Search";
 "search.cancel" = "Cancel";
+
+"category.pinned" = "Pinned";
+"tracker.pin" = "Pin";
+"tracker.unpin" = "Unpin";
+"tracker.edit" = "Edit";
+"tracker.delete" = "Delete";
+"tracker.save.button" = "Save";
+"tracker.edit.habit.title" = "Edit habit";
+"tracker.edit.irregular.title" = "Edit event";

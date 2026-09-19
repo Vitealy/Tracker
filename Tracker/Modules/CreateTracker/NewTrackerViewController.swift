@@ -22,9 +22,6 @@ final class NewTrackerViewController: UIViewController {
         "Color_13", "Color_14", "Color_15", "Color_16", "Color_17", "Color_18"
     ]
     
-    private var selectedEmoji: String?
-    private var selectedColor: String?
-    
     // MARK: - UI Elements
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -226,14 +223,23 @@ final class NewTrackerViewController: UIViewController {
     // MARK: - Properties
     private let trackerType: TrackerType
     private let categoryStore: TrackerCategoryStore
+    private let trackerStore: TrackerStore
+    private let trackerToEdit: Tracker?
+    private var selectedEmoji: String?
+    private var selectedColor: String?
     private var selectedCategory: String = "Важное"
     private var selectedDays: [Weekday] = Weekday.allCases
     weak var delegate: TrackersViewControllerDelegate?
     
     // MARK: - Init
-    init(trackerType: TrackerType, categoryStore: TrackerCategoryStore) {
+    init(trackerType: TrackerType,
+         categoryStore: TrackerCategoryStore,
+         trackerStore: TrackerStore,
+         trackerToEdit: Tracker? = nil) {
         self.trackerType = trackerType
         self.categoryStore = categoryStore
+        self.trackerStore = trackerStore
+        self.trackerToEdit = trackerToEdit
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -247,9 +253,20 @@ final class NewTrackerViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
-        navigationItem.title = trackerType == .habit
-        ? NSLocalizedString("tracker.new.habit", comment: "Заголовок новой привычки")
-        : NSLocalizedString("tracker.new.irregular", comment: "Заголовок нового нерегулярного события")
+        // Заголовок: "Новая привычка" или "Редактирование привычки"
+        if trackerToEdit != nil {
+            navigationItem.title = trackerType == .habit
+            ? NSLocalizedString("tracker.edit.habit.title", comment: "")
+            : NSLocalizedString("tracker.edit.irregular.title", comment: "")
+        } else {
+            navigationItem.title = trackerType == .habit
+            ? NSLocalizedString("tracker.new.habit", comment: "")
+            : NSLocalizedString("tracker.new.irregular", comment: "")
+        }
+        
+//        navigationItem.title = trackerType == .habit
+//        ? NSLocalizedString("tracker.new.habit", comment: "Заголовок новой привычки")
+//        : NSLocalizedString("tracker.new.irregular", comment: "Заголовок нового нерегулярного события")
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
@@ -265,11 +282,81 @@ final class NewTrackerViewController: UIViewController {
         
         setupLayout()
         setupCollections()
+        
+        if let tracker = trackerToEdit {
+            textField.text = tracker.name
+            selectedEmoji = tracker.emoji
+            selectedColor = tracker.color
+            selectedCategory = tracker.categoryKey ?? "Важное" // если у тебя есть ключ
+            if let schedule = tracker.schedule {
+                selectedDays = schedule
+            }
+            updateCategoryLabel()
+            updateScheduleLabel()
+            updateCreateButtonState() // пересчитать состояние "Создать"
+        }
+            
         textField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
         
         let tapGesture = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
+        
+        fillFieldsIfEditing()
+    }
+    
+    private func fillFieldsIfEditing() {
+        guard let tracker = trackerToEdit else { return }
+        
+        textField.text = tracker.name
+        selectedEmoji = tracker.emoji
+        selectedColor = tracker.color
+        if let categoryKey = tracker.categoryKey {
+            selectedCategory = categoryKey
+        }
+        if let schedule = tracker.schedule {
+            selectedDays = schedule
+        }
+        
+        // Обновляем UI на основе новых данных
+        updateCategoryLabel()
+        updateScheduleLabel()
+        updateCreateButtonState()
+        
+        // Перезагружаем коллекции, чтобы галочки/обводки стояли на выбранных элементах
+        emojiCollectionView.reloadData()
+        colorCollectionView.reloadData()
+        
+        // Меняем текст кнопки "Создать" на "Сохранить"
+        createButton.setTitle(NSLocalizedString("tracker.save.button", comment: ""), for: .normal)
+    }
+    
+    private func updateCategoryLabel() {
+        let displayTitle = CategoryLocalization.displayTitle(for: selectedCategory)
+        categoryDetailLabel.text = displayTitle
+        categoryDetailLabel.textColor = .gray
+    }
+
+    private func updateScheduleLabel() {
+        if selectedDays.count == 7 {
+            scheduleDetailLabel.text = NSLocalizedString("tracker.schedule.everyDay", comment: "")
+        } else if selectedDays.isEmpty {
+            scheduleDetailLabel.text = ""
+        } else {
+            let names = selectedDays.map { $0.shortName }.joined(separator: ", ")
+            scheduleDetailLabel.text = names
+        }
+    }
+
+    private func updateCreateButtonState() {
+        let text = textField.text ?? ""
+        let isFormValid = !text.isEmpty && selectedEmoji != nil && selectedColor != nil
+        createButton.isEnabled = isFormValid
+        createButton.backgroundColor = isFormValid ? UIColor(resource: .ypBlack) : UIColor(resource: .ypGray)
+        // Если редактируем — можно менять текст на "Сохранить"
+        if trackerToEdit != nil {
+            createButton.setTitle(NSLocalizedString("tracker.save.button", comment: ""), for: .normal)
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -511,9 +598,21 @@ final class NewTrackerViewController: UIViewController {
             name: name,
             color: color,
             emoji: emoji,
-            schedule: trackerType == .habit ? selectedDays : nil
+            schedule: trackerType == .habit ? selectedDays : nil,
+            categoryKey: selectedCategory
         )
-        delegate?.didCreateTracker(tracker, inCategory: selectedCategory)
+        
+        if trackerToEdit != nil {
+                // Обновление
+                do {
+                    try trackerStore.updateTracker(tracker)
+                } catch {
+                    print("Ошибка обновления: \(error)")
+                }
+            } else {
+                // Создание
+                delegate?.didCreateTracker(tracker, inCategory: selectedCategory)
+            }
         dismiss(animated: true)
     }
 }

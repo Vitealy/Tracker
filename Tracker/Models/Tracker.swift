@@ -15,6 +15,7 @@ struct Tracker {
     let color: String
     let emoji: String
     let schedule: [Weekday]? // nil для нерегулярного события
+    let categoryKey: String? 
 }
 
 // MARK: - Weekday

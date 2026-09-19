@@ -15,6 +15,8 @@ protocol TrackerDataProviderProtocol: AnyObject {
     func numberOfItems(in section: Int) -> Int
     func tracker(at indexPath: IndexPath) -> Tracker?
     func titleForSection(at index: Int) -> String
+    func trackerId(at indexPath: IndexPath) -> UUID?
+    func isPinned(at indexPath: IndexPath) -> Bool
     func performFetch()
     func refresh()
     func updateSearchQuery(_ query: String)

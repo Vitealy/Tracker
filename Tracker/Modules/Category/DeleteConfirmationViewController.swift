@@ -10,6 +10,7 @@ import UIKit
 final class DeleteConfirmationViewController: UIViewController {
     
     var onConfirm: (() -> Void)?
+    var messageText: String = NSLocalizedString("category.delete.message", comment: "Сообщение подтверждения удаления категории")
     
     // MARK: - UI Elements
     private let backgroundView: UIView = {
@@ -38,7 +39,7 @@ final class DeleteConfirmationViewController: UIViewController {
     
     private let messageLabel: UILabel = {
         let label = UILabel()
-        label.text = NSLocalizedString("category.delete.message", comment: "Сообщение подтверждения удаления категории")
+//        label.text = NSLocalizedString("category.delete.message", comment: "Сообщение подтверждения удаления категории")
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         label.textColor = UIColor(resource: .ypGray)
         label.textAlignment = .center
@@ -87,6 +88,7 @@ final class DeleteConfirmationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        messageLabel.text = messageText
     }
     
     // MARK: - Setup

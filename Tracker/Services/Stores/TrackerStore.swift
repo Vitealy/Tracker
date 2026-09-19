@@ -79,7 +79,17 @@ final class TrackerStore {
         existing.color = tracker.color
         existing.emoji = tracker.emoji
         existing.schedule = tracker.schedule?.map { $0.rawValue }.joined(separator: ",")
+        
+        // Обновляем категорию, если она изменилась
+        if let categoryKey = tracker.categoryKey {
+            let categoryStore = TrackerCategoryStore(context: context)
+            if let newCategory = try? categoryStore.getOrCreateCategory(with: categoryKey) {
+                existing.category = newCategory
+            }
+        }
+        
         try context.save()
+        context.processPendingChanges()
     }
     
     // MARK: - Удаление трекера
@@ -97,6 +107,7 @@ final class TrackerStore {
         fetchRequest.includesPendingChanges = true
         
         fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "isPinned", ascending: false),
             NSSortDescriptor(key: "category.title", ascending: true),
             NSSortDescriptor(key: "name", ascending: true)
         ]
@@ -134,7 +145,7 @@ final class TrackerStore {
         let fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
-            sectionNameKeyPath: "category.title",
+            sectionNameKeyPath: nil,
             cacheName: nil
         )
         
@@ -156,7 +167,13 @@ final class TrackerStore {
             .split(separator: ",")
             .compactMap { Weekday(rawValue: String($0)) }
         
-        return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule)
+        return Tracker(id: id,
+                       name: name,
+                       color: color,
+                       emoji: emoji,
+                       schedule: schedule,
+                       categoryKey: coreData.category?.title
+        )
     }
     
     // MARK: - Конвертация Core Data → структура Tracker
@@ -176,8 +193,40 @@ final class TrackerStore {
             name: name,
             color: color,
             emoji: emoji,
-            schedule: schedule
+            schedule: schedule,
+            categoryKey: coreData.category?.title
         )
+    }
+    
+    // MARK: - Закрепление/открепление
+
+    func togglePin(for trackerId: UUID) throws {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", trackerId as CVarArg)
+        guard let tracker = try? context.fetch(request).first else { return }
+        tracker.isPinned.toggle()
+        try context.save()
+        context.processPendingChanges()
+    }
+
+    // MARK: - Удаление трекера
+
+    func deleteTracker(withId id: UUID) throws {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        guard let tracker = try? context.fetch(request).first else { return }
+        context.delete(tracker)
+        try context.save()
+        context.processPendingChanges()
+    }
+
+    // MARK: - Получение трекера по id (для редактирования)
+
+    func fetchTracker(by id: UUID) -> Tracker? {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        guard let object = try? context.fetch(request).first else { return nil }
+        return convertToTracker(from: object)
     }
     
 }
