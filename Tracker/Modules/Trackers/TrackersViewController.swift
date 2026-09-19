@@ -87,6 +87,20 @@ final class TrackersViewController: UIViewController {
     private var dataProvider: TrackerDataProviderProtocol?
     private var currentDate: Date = Date()
     private var currentSearchQuery: String = ""
+    private let filterStorage = FilterStorage()
+    private var currentFilter: TrackerFilter = .all
+
+    private lazy var filterButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle(NSLocalizedString("filter.button.title", comment: ""), for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .systemBlue
+        button.layer.cornerRadius = 16
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(didTapFilterButton), for: .touchUpInside)
+        return button
+    }()
     
     // MARK: - Init
     
@@ -106,11 +120,13 @@ final class TrackersViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        currentFilter = filterStorage.current
         view.backgroundColor = .systemBackground
         setupNavigationBar()
         setupSearchTextField()
         setupCollectionView()
         setupPlaceholders()
+        setupFilterButton()
         updateDataProvider(for: currentDate)
     }
     
@@ -232,10 +248,40 @@ final class TrackersViewController: UIViewController {
         ])
     }
     
+    private func setupFilterButton() {
+        view.addSubview(filterButton)
+        
+        NSLayoutConstraint.activate([
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.widthAnchor.constraint(equalToConstant: 114)
+        ])
+        
+        // Оверскролл — чтобы ячейки прокручивались выше кнопки
+        collectionView.contentInset.bottom = 100
+        collectionView.verticalScrollIndicatorInsets.bottom = 100
+        collectionView.alwaysBounceVertical = true
+        
+        updateFilterButtonAppearance()
+    }
+
+    private func updateFilterButtonAppearance() {
+        if currentFilter.isActive {
+            filterButton.backgroundColor = UIColor(resource: .ypRed)
+        } else {
+            filterButton.backgroundColor = .systemBlue
+        }
+    }
+    
     // MARK: - Data Management
     
     private func updateDataProvider(for date: Date) {
-        dataProvider = TrackerDataProvider(date: date, trackerStore: trackerStore)
+        dataProvider = TrackerDataProvider(
+                date: date,
+                trackerStore: trackerStore,
+                filter: currentFilter
+            )
         dataProvider?.delegate = self
         dataProvider?.performFetch()
         collectionView.reloadData()
@@ -247,8 +293,7 @@ final class TrackersViewController: UIViewController {
     /// - Пусто и есть поиск → "Ничего не найдено"
     /// - Есть данные → скрыть всё
     private func updatePlaceholderVisibility() {
-        let sectionsCount = dataProvider?.numberOfSections() ?? 0
-        let isEmpty = sectionsCount == 0
+        let isEmpty = (dataProvider?.numberOfSections() ?? 0) == 0
         
         let hasSearchQuery = !currentSearchQuery.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         
@@ -264,6 +309,9 @@ final class TrackersViewController: UIViewController {
         notFoundLabel.isHidden = !showNotFoundPlaceholder
         
         collectionView.isHidden = isEmpty
+        
+        // Скрываем кнопку «Фильтры», если на выбранный день нет трекеров вообще
+        filterButton.isHidden = isEmpty && !currentFilter.isActive && !hasSearchQuery
     }
     
     // MARK: - Actions
@@ -287,6 +335,35 @@ final class TrackersViewController: UIViewController {
         searchTextField.resignFirstResponder()
         currentSearchQuery = ""
         updateDataProvider(for: currentDate)
+    }
+    
+    @objc private func didTapFilterButton() {
+        let filtersVC = FiltersViewController(selectedFilter: currentFilter)
+        filtersVC.onFilterSelected = { [weak self] filter in
+            self?.applyFilter(filter)
+        }
+        let nav = UINavigationController(rootViewController: filtersVC)
+        present(nav, animated: true)
+    }
+
+    private func applyFilter(_ filter: TrackerFilter) {
+        currentFilter = filter
+        filterStorage.current = filter
+        
+        // Если .today — переключаем дату на сегодня
+        if filter == .today {
+            currentDate = Date()
+            datePicker.date = currentDate
+        }
+        
+        updateFilterButtonAppearance()
+        
+        // Пересоздаём провайдер с новым фильтром
+        if let provider = dataProvider as? TrackerDataProvider {
+            provider.updateFilter(filter)
+        }
+        
+        updatePlaceholderVisibility()
     }
     
     // MARK: - Logic: Toggle completion

@@ -105,3 +105,11 @@
 "tracker.save.button" = "Сохранить";
 "tracker.edit.habit.title" = "Редактирование привычки";
 "tracker.edit.irregular.title" = "Редактирование события";
+
+// MARK: - Filter
+"filter.title" = "Фильтры";
+"filter.button.title" = "Фильтры";
+"filter.all" = "Все трекеры";
+"filter.today" = "Трекеры на сегодня";
+"filter.completed" = "Завершённые";
+"filter.uncompleted" = "Незавершённые";

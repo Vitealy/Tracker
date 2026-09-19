@@ -20,6 +20,7 @@ protocol TrackerDataProviderProtocol: AnyObject {
     func performFetch()
     func refresh()
     func updateSearchQuery(_ query: String)
+    func updateFilter(_ filter: TrackerFilter)
 }
 
 /// Делегат для оповещения об изменениях данных (аналог NSFetchedResultsControllerDelegate)

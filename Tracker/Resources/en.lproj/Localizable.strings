@@ -105,3 +105,11 @@
 "tracker.save.button" = "Save";
 "tracker.edit.habit.title" = "Edit habit";
 "tracker.edit.irregular.title" = "Edit event";
+
+// MARK: - Filter
+"filter.title" = "Filters";
+"filter.button.title" = "Filters";
+"filter.all" = "All trackers";
+"filter.today" = "Trackers for today";
+"filter.completed" = "Completed";
+"filter.uncompleted" = "Uncompleted";

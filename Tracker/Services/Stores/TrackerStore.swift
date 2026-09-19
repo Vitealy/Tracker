@@ -102,7 +102,11 @@ final class TrackerStore {
         try context.save()
     }
     
-    func fetchedResultsController(for date: Date, searchQuery: String = "") -> NSFetchedResultsController<TrackerCoreData> {
+    func fetchedResultsController(
+        for date: Date,
+        searchQuery: String = "",
+        filter: TrackerFilter = .all
+    ) -> NSFetchedResultsController<TrackerCoreData> {
         let fetchRequest = TrackerCoreData.fetchRequest()
         fetchRequest.includesPendingChanges = true
         
@@ -112,7 +116,7 @@ final class TrackerStore {
             NSSortDescriptor(key: "name", ascending: true)
         ]
         
-        // Определяем текущий день недели
+        // День недели
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ru_RU")
         dateFormatter.dateFormat = "EEEE"
@@ -130,28 +134,47 @@ final class TrackerStore {
             }
         }()
         
-        // Базовый предикат: день недели подходит ИЛИ расписание отсутствует (нерегулярное событие)
         var predicates: [NSPredicate] = [
             NSPredicate(format: "schedule == nil OR schedule CONTAINS[c] %@", weekdayShort)
         ]
         
-        // Если есть поисковый запрос — фильтруем ещё и по имени трекера
+        // Поиск по имени
         if !searchQuery.isEmpty {
             predicates.append(NSPredicate(format: "name CONTAINS[c] %@", searchQuery))
         }
         
+        // Фильтры по завершённости
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+        if let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) {
+            switch filter {
+            case .all, .today:
+                break // без дополнительной фильтрации
+            case .completed:
+                // есть хотя бы одна запись за этот день
+                predicates.append(NSPredicate(
+                    format: "SUBQUERY(records, $r, $r.date >= %@ AND $r.date < %@).@count > 0",
+                    startOfDay as CVarArg, endOfDay as CVarArg
+                ))
+            case .uncompleted:
+                // нет ни одной записи за этот день
+                predicates.append(NSPredicate(
+                    format: "SUBQUERY(records, $r, $r.date >= %@ AND $r.date < %@).@count == 0",
+                    startOfDay as CVarArg, endOfDay as CVarArg
+                ))
+            }
+        }
+        
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         
-        let fetchedResultsController = NSFetchedResultsController(
+        let frc = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
-        
-        try? fetchedResultsController.performFetch()
-        print("🔍 Найдено объектов после fetch: \(fetchedResultsController.fetchedObjects?.count ?? 0)")
-        return fetchedResultsController
+        try? frc.performFetch()
+        return frc
     }
     
     func refreshContext() {

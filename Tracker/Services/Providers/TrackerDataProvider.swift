@@ -7,14 +7,17 @@ final class TrackerDataProvider: NSObject, TrackerDataProviderProtocol {
     private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>
     private let trackerStore: TrackerStore
     private let date: Date
+    private var filter: TrackerFilter = .all
+    private var currentQuery: String = ""
     
     /// Сгруппированные секции для отображения.
     private var sectionData: [(title: String, trackers: [TrackerCoreData])] = []
     
-    init(date: Date, trackerStore: TrackerStore) {
+    init(date: Date, trackerStore: TrackerStore, filter: TrackerFilter = .all) {
         self.trackerStore = trackerStore
         self.date = date
-        self.fetchedResultsController = trackerStore.fetchedResultsController(for: date)
+        self.filter = filter
+        self.fetchedResultsController = trackerStore.fetchedResultsController(for: date, filter: filter)
         super.init()
         self.fetchedResultsController.delegate = self
         try? self.fetchedResultsController.performFetch()
@@ -106,8 +109,19 @@ final class TrackerDataProvider: NSObject, TrackerDataProviderProtocol {
     }
     
     func updateSearchQuery(_ query: String) {
+        currentQuery = query
         fetchedResultsController.delegate = nil
         fetchedResultsController = trackerStore.fetchedResultsController(for: date, searchQuery: query)
+        fetchedResultsController.delegate = self
+        try? fetchedResultsController.performFetch()
+        computeSections()
+        delegate?.didChangeContent(self)
+    }
+    
+    func updateFilter(_ filter: TrackerFilter) {
+        self.filter = filter
+        fetchedResultsController.delegate = nil
+        fetchedResultsController = trackerStore.fetchedResultsController(for: date, searchQuery: currentQuery, filter: filter)
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
         computeSections()
