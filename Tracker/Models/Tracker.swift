@@ -14,7 +14,7 @@ struct Tracker {
     let name: String
     let color: String
     let emoji: String
-    let schedule: [Weekday]? // nil для нерегулярного события
+    let schedule: [Weekday]? 
     let categoryKey: String? 
 }
 
@@ -29,7 +29,7 @@ enum Weekday: String, CaseIterable {
     case saturday = "Сб"
     case sunday = "Вс"
 }
-// Расширение для Weekday (полное название на русском)
+
 extension Weekday {
     
     var localizationKey: String {
@@ -44,7 +44,6 @@ extension Weekday {
         }
     }
     
-    /// Ключ локализации для короткого названия дня
     var shortLocalizationKey: String {
         switch self {
         case .monday: return "weekday.monday.short"
@@ -63,5 +62,20 @@ extension Weekday {
     
     var shortName: String {
         return NSLocalizedString(shortLocalizationKey, comment: "Короткое название дня недели")
+    }
+    
+    static func from(date: Date) -> Weekday? {
+        let calendar = Calendar.current
+        
+        switch calendar.component(.weekday, from: date) {
+        case 1: return .monday
+        case 2: return .tuesday
+        case 3: return .wednesday
+        case 4: return .thursday
+        case 5: return .friday
+        case 6: return .saturday
+        case 7: return .sunday
+        default: return nil
+        }
     }
 }

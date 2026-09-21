@@ -131,7 +131,6 @@ extension ScheduleViewController: UITableViewDelegate {
             // Сдвигаем разделитель за правый край таблицы, делая его невидимым
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         } else {
-            // Для всех остальных ячеек оставляем отступы как в макете (16 слева и справа)
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         }
     }

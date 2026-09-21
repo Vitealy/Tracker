@@ -10,7 +10,6 @@ import Foundation
 final class FilterStorage {
     private let key = "trackers.selectedFilter"
     
-    /// Текущий выбранный фильтр. Если ничего не сохранено — .all.
     var current: TrackerFilter {
         get {
             guard let raw = UserDefaults.standard.string(forKey: key),

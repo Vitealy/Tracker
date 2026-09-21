@@ -33,7 +33,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Core Data Saving
     
     func applicationDidEnterBackground(_ application: UIApplication) {
-        // Сохраняем контекст при уходе в фон
         CoreDataManager.shared.saveContext()
     }
 }

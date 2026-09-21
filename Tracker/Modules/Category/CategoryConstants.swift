@@ -17,8 +17,6 @@ enum CategoryConstants {
         "category.default.sport"
     ]
     
-    /// Соответствие «старый локализованный текст → ключ локализации».
-    /// Используется для одноразовой миграции в Core Data.
     static let legacyTitleToKeyMap: [String: String] = [
         // Русские значения
         "Важное": "category.default.important",

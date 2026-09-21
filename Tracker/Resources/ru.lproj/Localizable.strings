@@ -113,3 +113,9 @@
 "filter.today" = "Трекеры на сегодня";
 "filter.completed" = "Завершённые";
 "filter.uncompleted" = "Незавершённые";
+
+// MARK: - Statistics
+"statistics.bestPeriod" = "Лучший период";
+"statistics.idealDays" = "Идеальные дни";
+"statistics.completed" = "Трекеров завершено";
+"statistics.average" = "Среднее значение";

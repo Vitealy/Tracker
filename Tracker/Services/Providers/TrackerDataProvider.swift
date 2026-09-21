@@ -10,7 +10,6 @@ final class TrackerDataProvider: NSObject, TrackerDataProviderProtocol {
     private var filter: TrackerFilter = .all
     private var currentQuery: String = ""
     
-    /// Сгруппированные секции для отображения.
     private var sectionData: [(title: String, trackers: [TrackerCoreData])] = []
     
     init(date: Date, trackerStore: TrackerStore, filter: TrackerFilter = .all) {
@@ -73,14 +72,11 @@ final class TrackerDataProvider: NSObject, TrackerDataProviderProtocol {
         return trackerStore.convertToTracker(from: trackers[indexPath.row])
     }
     
-    /// Возвращает ключ категории секции (для локализации заголовка).
-    /// Для «Закреплённые» возвращает уже локализованную строку — так проще.
     func titleForSection(at index: Int) -> String {
         guard index < sectionData.count else { return "" }
         return sectionData[index].title
     }
     
-    /// Возвращает id трекера по indexPath — для контекстного меню.
     func trackerId(at indexPath: IndexPath) -> UUID? {
         guard indexPath.section < sectionData.count else { return nil }
         let trackers = sectionData[indexPath.section].trackers
@@ -88,7 +84,6 @@ final class TrackerDataProvider: NSObject, TrackerDataProviderProtocol {
         return trackers[indexPath.row].id
     }
     
-    /// Возвращает флаг «закреплён» для трекера — нужно для текста пункта меню.
     func isPinned(at indexPath: IndexPath) -> Bool {
         guard indexPath.section < sectionData.count else { return false }
         let trackers = sectionData[indexPath.section].trackers

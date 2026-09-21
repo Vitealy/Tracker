@@ -18,8 +18,6 @@ final class TrackerCategoryStore {
     
     // MARK: - Миграция дефолтных категорий в ключи локализации
 
-    /// Проходит по всем категориям и заменяет локализованный текст дефолтных категорий
-    /// на их ключи локализации. Идемпотентно: повторный вызов ничего не изменит.
     func migrateDefaultCategoriesToKeys() throws {
         let request = TrackerCategoryCoreData.fetchRequest()
         guard let categories = try? context.fetch(request) else { return }

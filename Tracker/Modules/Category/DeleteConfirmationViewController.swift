@@ -20,7 +20,6 @@ final class DeleteConfirmationViewController: UIViewController {
         return view
     }()
     
-    // Верхний блок (текст + кнопка "Удалить")
     private let topContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
@@ -39,7 +38,6 @@ final class DeleteConfirmationViewController: UIViewController {
     
     private let messageLabel: UILabel = {
         let label = UILabel()
-//        label.text = NSLocalizedString("category.delete.message", comment: "Сообщение подтверждения удаления категории")
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         label.textColor = UIColor(resource: .ypGray)
         label.textAlignment = .center
@@ -64,7 +62,6 @@ final class DeleteConfirmationViewController: UIViewController {
         return button
     }()
     
-    // Нижний блок (кнопка "Отменить")
     private let bottomContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(resource: .ypWhite)

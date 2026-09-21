@@ -10,8 +10,6 @@ import AppMetricaCore
 
 // MARK: - AnalyticsService
 
-/// Сервис для отправки событий в AppMetrica.
-/// Инкапсулирует строковые константы и упрощает вызовы.
 final class AnalyticsService {
     
     // MARK: - Singleton
@@ -21,19 +19,16 @@ final class AnalyticsService {
     
     // MARK: - Константы событий
     
-    /// Типы событий.
     enum Event: String {
         case open  = "open"
         case close = "close"
         case click = "click"
     }
     
-    /// Экраны, на которых происходят события.
     enum Screen: String {
         case main = "Main"
     }
     
-    /// Элементы, по которым был совершен тап.
     enum Item: String {
         case addTrack = "add_track"
         case track    = "track"
@@ -44,11 +39,6 @@ final class AnalyticsService {
     
     // MARK: - Публичный метод
     
-    /// Отправляет событие в AppMetrica.
-    /// - Parameters:
-    ///   - event: Тип события (open, close, click).
-    ///   - screen: Название экрана.
-    ///   - item: Элемент (только для click).
     func log(event: Event, screen: Screen, item: Item? = nil) {
         // Формируем словарь параметров
         var params: [String: String] = [

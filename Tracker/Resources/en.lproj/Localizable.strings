@@ -113,3 +113,9 @@
 "filter.today" = "Trackers for today";
 "filter.completed" = "Completed";
 "filter.uncompleted" = "Uncompleted";
+
+// MARK: - Statistics
+"statistics.bestPeriod" = "Best period";
+"statistics.idealDays" = "Ideal days";
+"statistics.completed" = "Trackers completed";
+"statistics.average" = "Average value";

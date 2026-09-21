@@ -264,10 +264,6 @@ final class NewTrackerViewController: UIViewController {
             : NSLocalizedString("tracker.new.irregular", comment: "")
         }
         
-//        navigationItem.title = trackerType == .habit
-//        ? NSLocalizedString("tracker.new.habit", comment: "Заголовок новой привычки")
-//        : NSLocalizedString("tracker.new.irregular", comment: "Заголовок нового нерегулярного события")
-        
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = .systemBackground
@@ -353,7 +349,7 @@ final class NewTrackerViewController: UIViewController {
         let isFormValid = !text.isEmpty && selectedEmoji != nil && selectedColor != nil
         createButton.isEnabled = isFormValid
         createButton.backgroundColor = isFormValid ? UIColor(resource: .ypBlack) : UIColor(resource: .ypGray)
-        // Если редактируем — можно менять текст на "Сохранить"
+        
         if trackerToEdit != nil {
             createButton.setTitle(NSLocalizedString("tracker.save.button", comment: ""), for: .normal)
         }

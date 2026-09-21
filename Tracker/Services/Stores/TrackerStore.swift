@@ -96,13 +96,24 @@ final class TrackerStore {
     }
     
     // MARK: - Удаление трекера
-    
-    func deleteTracker(by id: UUID) throws {
+
+    /// Удаляет трекер по id вместе со всеми связанными записями о выполнении.
+    func deleteTracker(withId id: UUID) throws {
+        // 1. Сначала удаляем записи о выполнении — до удаления трекера,
+        //    чтобы predicate по trackerId гарантированно нашёл их.
+        let recordStore = TrackerRecordStore(context: context)
+        try recordStore.deleteRecords(for: id)
+        
+        // 2. Теперь удаляем сам трекер.
         let request = TrackerCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
-        guard let object = try? context.fetch(request).first else { return }
-        context.delete(object)
+        guard let tracker = try? context.fetch(request).first else { return }
+        context.delete(tracker)
+        
+        // 3. Сохраняем и прогоняем pending changes,
+        //    чтобы NSFetchedResultsController сразу увидел изменения.
         try context.save()
+        context.processPendingChanges()
     }
     
     func fetchedResultsController(
@@ -231,17 +242,6 @@ final class TrackerStore {
         request.predicate = NSPredicate(format: "id == %@", trackerId as CVarArg)
         guard let tracker = try? context.fetch(request).first else { return }
         tracker.isPinned.toggle()
-        try context.save()
-        context.processPendingChanges()
-    }
-
-    // MARK: - Удаление трекера
-
-    func deleteTracker(withId id: UUID) throws {
-        let request = TrackerCoreData.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
-        guard let tracker = try? context.fetch(request).first else { return }
-        context.delete(tracker)
         try context.save()
         context.processPendingChanges()
     }

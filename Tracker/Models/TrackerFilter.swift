@@ -13,7 +13,6 @@ enum TrackerFilter: String, CaseIterable {
     case completed      // Завершённые
     case uncompleted    // Незавершённые
     
-    /// Текст, который показывается в списке фильтров.
     var title: String {
         switch self {
         case .all:         return NSLocalizedString("filter.all", comment: "")
@@ -23,8 +22,6 @@ enum TrackerFilter: String, CaseIterable {
         }
     }
     
-    /// Активный ли это фильтр — используется для подсветки кнопки.
-    /// .all и .today — это сброс фильтрации, они не считаются активными.
     var isActive: Bool {
         switch self {
         case .all, .today: return false
@@ -32,8 +29,6 @@ enum TrackerFilter: String, CaseIterable {
         }
     }
     
-    /// Нужно ли показывать синюю галочку в списке фильтров.
-    /// .all и .today — не показываем.
     var showsCheckmark: Bool {
         return isActive
     }
