@@ -6,11 +6,19 @@
 //
 
 import UIKit
+import AppMetricaCore
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        // Инициализация AppMetrica
+        if let configuration = AppMetricaConfiguration(apiKey: "ab9e04fc-1698-45b3-9ebc-83490774f490") {
+            configuration.areLogsEnabled = true // включаем логи библиотеки (полезно при отладке)
+            AppMetrica.activate(with: configuration)
+        }
+        
         return true
     }
     

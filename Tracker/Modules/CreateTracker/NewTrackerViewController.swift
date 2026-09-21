@@ -210,7 +210,7 @@ final class NewTrackerViewController: UIViewController {
     private let createButton: UIButton = {
         let button = UIButton(type: .system)
             button.setTitle(NSLocalizedString("tracker.create.button", comment: "Кнопка создания"), for: .normal)
-            button.setTitleColor(.white, for: .normal)
+            button.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
             button.backgroundColor = UIColor(resource: .ypGray)
             button.layer.cornerRadius = 16
             button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)

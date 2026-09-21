@@ -130,6 +130,16 @@ final class TrackersViewController: UIViewController {
         updateDataProvider(for: currentDate)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AnalyticsService.shared.log(event: .open, screen: .main)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        AnalyticsService.shared.log(event: .close, screen: .main)
+    }
+    
     // MARK: - Setup
     
     private func setupNavigationBar() {
@@ -162,7 +172,18 @@ final class TrackersViewController: UIViewController {
             target: self,
             action: #selector(didTapAddButton)
         )
+        addButton.tintColor = .clear
         navigationItem.leftBarButtonItem = addButton
+        
+//        let addButton = UIButton(type: .custom)
+//        addButton.setImage(
+//            UIImage(resource: .addTracker).withRenderingMode(.alwaysOriginal),
+//            for: .normal
+//        )
+//        addButton.frame = CGRect(x: 0, y: 0, width: 42, height: 42)
+//        addButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
+//
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addButton)
         
         // DatePicker
         let calendar = Calendar.current
@@ -317,6 +338,9 @@ final class TrackersViewController: UIViewController {
     // MARK: - Actions
     
     @objc private func didTapAddButton() {
+        
+        AnalyticsService.shared.log(event: .click, screen: .main, item: .addTrack)
+        
         let typeVC = TrackerTypeViewController()
         typeVC.delegate = self
         present(typeVC, animated: true)
@@ -338,6 +362,9 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func didTapFilterButton() {
+        
+        AnalyticsService.shared.log(event: .click, screen: .main, item: .filter)
+        
         let filtersVC = FiltersViewController(selectedFilter: currentFilter)
         filtersVC.onFilterSelected = { [weak self] filter in
             self?.applyFilter(filter)
@@ -489,6 +516,9 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 
 extension TrackersViewController: TrackerCellDelegate {
     func didTapCompleteButton(in cell: TrackerCell, for trackerId: UUID) {
+        
+        AnalyticsService.shared.log(event: .click, screen: .main, item: .track)
+        
         toggleTrackerCompletion(for: trackerId)
     }
 }
@@ -562,6 +592,7 @@ extension TrackersViewController {
                 title: NSLocalizedString("tracker.edit", comment: "Редактировать трекер"),
                 image: UIImage(systemName: "pencil")
             ) { _ in
+                AnalyticsService.shared.log(event: .click, screen: .main, item: .edit)
                 self?.editTracker(withId: trackerId)
             }
             
@@ -569,8 +600,9 @@ extension TrackersViewController {
             let deleteAction = UIAction(
                 title: NSLocalizedString("tracker.delete", comment: "Удалить трекер"),
                 image: UIImage(systemName: "trash"),
-                attributes: .destructive // 👈 делает текст красным
+                attributes: .destructive
             ) { _ in
+                AnalyticsService.shared.log(event: .click, screen: .main, item: .delete)
                 self?.deleteTracker(withId: trackerId)
             }
             

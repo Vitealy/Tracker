@@ -34,7 +34,7 @@ final class TrackerTypeViewController: UIViewController {
         button.setTitle(NSLocalizedString("tracker.type.habit", comment: "Кнопка Привычка"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = UIColor(named: "YP Black") ?? .black
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(habitButtonTapped), for: .touchUpInside)
@@ -46,7 +46,7 @@ final class TrackerTypeViewController: UIViewController {
         button.setTitle(NSLocalizedString("tracker.type.irregular", comment: "Кнопка Нерегулярное событие"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = UIColor(named: "YP Black") ?? .black
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(irregularButtonTapped), for: .touchUpInside)

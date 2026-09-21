@@ -32,7 +32,7 @@ final class CategoryViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle(NSLocalizedString("category.add.button", comment: "Кнопка добавления категории"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
         button.backgroundColor = UIColor(resource: .ypBlack)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false

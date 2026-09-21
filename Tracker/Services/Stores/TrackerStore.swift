@@ -38,7 +38,10 @@ final class TrackerStore {
         
         // 3. Сохраняем контекст
         try context.save()
-        context.processPendingChanges()
+//        context.processPendingChanges()
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            context.processPendingChanges()
+        }
         print("✅ Трекер сохранён: \(tracker.name), schedule: \(scheduleString ?? "nil")")
     }
     

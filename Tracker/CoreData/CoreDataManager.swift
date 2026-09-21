@@ -18,6 +18,14 @@ final class CoreDataManager {
     
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Tracker")
+        
+        if isRunningTests {
+            let description = NSPersistentStoreDescription()
+            description.type = NSInMemoryStoreType
+            description.shouldAddStoreAsynchronously = false
+            container.persistentStoreDescriptions = [description]
+        }
+        
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
                 fatalError("❌ Не удалось загрузить хранилище Core Data: \(error), \(error.userInfo)")
@@ -45,5 +53,9 @@ final class CoreDataManager {
                 fatalError("❌ Не удалось сохранить контекст Core Data: \(nserror), \(nserror.userInfo)")
             }
         }
+    }
+    
+    private var isRunningTests: Bool {
+        return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 }
