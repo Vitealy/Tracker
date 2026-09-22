@@ -279,11 +279,9 @@ final class TrackersViewController: UIViewController {
     }
 
     private func updateFilterButtonAppearance() {
-        if currentFilter.isActive {
-            filterButton.backgroundColor = UIColor(resource: .ypRed)
-        } else {
-            filterButton.backgroundColor = .systemBlue
-        }
+        filterButton.backgroundColor = currentFilter.isActive
+                ? UIColor(resource: .ypRed)
+                : UIColor(resource: .ypBlue)
     }
     
     // MARK: - Data Management

@@ -1,3 +1,10 @@
+//
+//  TrackerDataProvider.swift
+//  Tracker
+//
+//  Created by Vitaly Kashavkin on 23.08.2026.
+//
+
 import CoreData
 import UIKit
 

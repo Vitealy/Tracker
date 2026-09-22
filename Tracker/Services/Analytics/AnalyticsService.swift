@@ -21,9 +21,9 @@ final class AnalyticsService {
     // MARK: - Константы событий
     
     enum Event: String {
-        case open  = "open"
-        case close = "close"
-        case click = "click"
+        case open
+        case close
+        case click
     }
     
     enum Screen: String {
@@ -32,10 +32,10 @@ final class AnalyticsService {
     
     enum Item: String {
         case addTrack = "add_track"
-        case track    = "track"
-        case filter   = "filter"
-        case edit     = "edit"
-        case delete   = "delete"
+        case track
+        case filter
+        case edit
+        case delete
     }
     
     // MARK: - Публичный метод
@@ -48,7 +48,7 @@ final class AnalyticsService {
         ]
         
         // item отправляется только для событий click
-        if let item = item {
+        if let item {
             params["item"] = item.rawValue
         }
         

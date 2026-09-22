@@ -1,0 +1,1460 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "category.add.button" : {
+      "comment" : "Кнопка добавления категории",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add category"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить категорию"
+          }
+        }
+      }
+    },
+    "category.cancel.button" : {
+      "comment" : "Кнопка отмены",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменить"
+          }
+        }
+      }
+    },
+    "category.context.delete" : {
+      "comment" : "Удалить категорию",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить"
+          }
+        }
+      }
+    },
+    "category.context.edit" : {
+      "comment" : "Редактировать категорию",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Редактировать"
+          }
+        }
+      }
+    },
+    "category.default.habits" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habits"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Привычки"
+          }
+        }
+      }
+    },
+    "category.default.important" : {
+      "comment" : "Название категории по умолчанию - указываем Важное",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Important"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Важное"
+          }
+        }
+      }
+    },
+    "category.default.joyful" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Little Joys"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Радостные мелочи"
+          }
+        }
+      }
+    },
+    "category.default.mindfulness" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindfulness"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Внимательность"
+          }
+        }
+      }
+    },
+    "category.default.sport" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sport"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спорт"
+          }
+        }
+      }
+    },
+    "category.default.wellbeing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wellbeing"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Самочувствие"
+          }
+        }
+      }
+    },
+    "category.delete.button" : {
+      "comment" : "Кнопка удаления",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить"
+          }
+        }
+      }
+    },
+    "category.delete.message" : {
+      "comment" : "Сообщение подтверждения удаления категории",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you don't need this category?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эта категория точно не нужна?"
+          }
+        }
+      }
+    },
+    "category.done.button" : {
+      "comment" : "Кнопка Готово",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Готово"
+          }
+        }
+      }
+    },
+    "category.edit.title" : {
+      "comment" : "Заголовок редактирования категории",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit category"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Редактирование категории"
+          }
+        }
+      }
+    },
+    "category.error.add" : {
+      "comment" : "Ошибка добавления категории",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to add category"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось добавить категорию"
+          }
+        }
+      }
+    },
+    "category.error.delete" : {
+      "comment" : "Ошибка удаления категории",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to delete category"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось удалить категорию"
+          }
+        }
+      }
+    },
+    "category.error.update" : {
+      "comment" : "Ошибка обновления категории",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to update category"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось обновить категорию"
+          }
+        }
+      }
+    },
+    "category.new.title" : {
+      "comment" : "Заголовок новой категории",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New category"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новая категория"
+          }
+        }
+      }
+    },
+    "category.pinned" : {
+      "comment" : "Название раздела закреплённых",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pinned"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрепленные"
+          }
+        }
+      }
+    },
+    "category.textfield.placeholder" : {
+      "comment" : "Плейсхолдер поля ввода названия категории",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter category name"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введите название категории"
+          }
+        }
+      }
+    },
+    "category.title" : {
+      "comment" : "Заголовок экрана категорий",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Категория"
+          }
+        }
+      }
+    },
+    "common.error.title" : {
+      "comment" : "Заголовок ошибки",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ошибка"
+          }
+        }
+      }
+    },
+    "common.ok" : {
+      "comment" : "Кнопка OK",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "days.count" : {
+      "comment" : "Количество дней, например: 5 дней",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d day"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d days"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d дня"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d дней"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d день"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d дней"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "filter.all" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All trackers"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все трекеры"
+          }
+        }
+      }
+    },
+    "filter.button.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filters"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фильтры"
+          }
+        }
+      }
+    },
+    "filter.completed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершённые"
+          }
+        }
+      }
+    },
+    "filter.title" : {
+      "comment" : "MARK: - Filter",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filters"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фильтры"
+          }
+        }
+      }
+    },
+    "filter.today" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trackers for today"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Трекеры на сегодня"
+          }
+        }
+      }
+    },
+    "filter.uncompleted" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uncompleted"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Незавершённые"
+          }
+        }
+      }
+    },
+    "onboarding.button.title" : {
+      "comment" : "Кнопка завершения онбординга",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That's technology!"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вот это технологии!"
+          }
+        }
+      }
+    },
+    "onboarding.page1.title" : {
+      "comment" : "Заголовок первой страницы онбординга",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Track only\nwhat you want"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отслеживайте только\nто, что хотите"
+          }
+        }
+      }
+    },
+    "onboarding.page2.title" : {
+      "comment" : "Заголовок второй страницы онбординга",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Even if it's not\nliters of water and yoga"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Даже если это\nне литры воды и йога"
+          }
+        }
+      }
+    },
+    "schedule.done.button" : {
+      "comment" : "Кнопка Готово",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Готово"
+          }
+        }
+      }
+    },
+    "schedule.title" : {
+      "comment" : "Заголовок экрана расписания",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Расписание"
+          }
+        }
+      }
+    },
+    "search.cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменить"
+          }
+        }
+      }
+    },
+    "search.placeholder" : {
+      "comment" : "Плейсхолдер поиска",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поиск"
+          }
+        }
+      }
+    },
+    "statistics.average" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average value"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Среднее значение"
+          }
+        }
+      }
+    },
+    "statistics.bestPeriod" : {
+      "comment" : "MARK: - Statistics",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Best period"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лучший период"
+          }
+        }
+      }
+    },
+    "statistics.completed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trackers completed"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Трекеров завершено"
+          }
+        }
+      }
+    },
+    "statistics.idealDays" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideal days"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Идеальные дни"
+          }
+        }
+      }
+    },
+    "statistics.placeholder" : {
+      "comment" : "Заглушка статистики",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing to analyze yet"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Анализировать пока нечего"
+          }
+        }
+      }
+    },
+    "statistics.title" : {
+      "comment" : "Заголовок статистики",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistics"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Статистика"
+          }
+        }
+      }
+    },
+    "tabbar.statistics" : {
+      "comment" : "Название вкладки Статистика",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistics"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Статистика"
+          }
+        }
+      }
+    },
+    "tabbar.trackers" : {
+      "comment" : "Название вкладки Трекеры",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trackers"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Трекеры"
+          }
+        }
+      }
+    },
+    "tracker.cancel.button" : {
+      "comment" : "Кнопка отмены",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменить"
+          }
+        }
+      }
+    },
+    "tracker.create.button" : {
+      "comment" : "Кнопка создания",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создать"
+          }
+        }
+      }
+    },
+    "tracker.delete" : {
+      "comment" : "Удалить трекер",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить"
+          }
+        }
+      }
+    },
+    "tracker.delete.message" : {
+      "comment" : "Сообщение подтверждения удаления трекера",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to delete the tracker?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уверены что хотите удалить трекер?"
+          }
+        }
+      }
+    },
+    "tracker.edit" : {
+      "comment" : "Редактировать трекер",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Редактировать"
+          }
+        }
+      }
+    },
+    "tracker.edit.habit.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit habit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Редактирование привычки"
+          }
+        }
+      }
+    },
+    "tracker.edit.irregular.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit event"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Редактирование события"
+          }
+        }
+      }
+    },
+    "tracker.new.habit" : {
+      "comment" : "MARK: - New Tracker",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New habit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новая привычка"
+          }
+        }
+      }
+    },
+    "tracker.new.irregular" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New irregular event"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новое нерегулярное событие"
+          }
+        }
+      }
+    },
+    "tracker.pin" : {
+      "comment" : "Закрепить трекер",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pin"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрепить"
+          }
+        }
+      }
+    },
+    "tracker.save.button" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранить"
+          }
+        }
+      }
+    },
+    "tracker.schedule.everyday" : {
+      "comment" : "По умолчанию — ежедневно",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every day"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ежедневно"
+          }
+        }
+      }
+    },
+    "tracker.schedule.everyDay" : {
+      "comment" : "Каждый день",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every day"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Каждый день"
+          }
+        }
+      }
+    },
+    "tracker.section.category" : {
+      "comment" : "Заголовок раздела Категория",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Категория"
+          }
+        }
+      }
+    },
+    "tracker.section.color" : {
+      "comment" : "Заголовок раздела Цвет",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цвет"
+          }
+        }
+      }
+    },
+    "tracker.section.emoji" : {
+      "comment" : "Заголовок раздела Emoji",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emoji"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emoji"
+          }
+        }
+      }
+    },
+    "tracker.section.schedule" : {
+      "comment" : "Заголовок раздела Расписание",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Расписание"
+          }
+        }
+      }
+    },
+    "tracker.textfield.placeholder" : {
+      "comment" : "Плейсхолдер поля ввода названия трекера",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter tracker name"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введите название трекера"
+          }
+        }
+      }
+    },
+    "tracker.type.habit" : {
+      "comment" : "Кнопка Привычка",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Привычка"
+          }
+        }
+      }
+    },
+    "tracker.type.irregular" : {
+      "comment" : "Кнопка Нерегулярное событие",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Irregular event"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нерегулярное событие"
+          }
+        }
+      }
+    },
+    "tracker.type.title" : {
+      "comment" : "Заголовок экрана создания трекера",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create tracker"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создание трекера"
+          }
+        }
+      }
+    },
+    "tracker.unpin" : {
+      "comment" : "Открепить трекер",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unpin"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открепить"
+          }
+        }
+      }
+    },
+    "trackers.notFound" : {
+      "comment" : "Заглушка при отсутствии результатов поиска",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing found"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ничего не найдено"
+          }
+        }
+      }
+    },
+    "trackers.placeholder" : {
+      "comment" : "Заглушка при отсутствии трекеров",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What will we track?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Что будем отслеживать?"
+          }
+        }
+      }
+    },
+    "trackers.title" : {
+      "comment" : "Заголовок экрана трекеров",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trackers"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Трекеры"
+          }
+        }
+      }
+    },
+    "weekday.friday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Friday"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пятница"
+          }
+        }
+      }
+    },
+    "weekday.friday.short" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fri"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пт"
+          }
+        }
+      }
+    },
+    "weekday.monday" : {
+      "comment" : "MARK: - Weekdays",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monday"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Понедельник"
+          }
+        }
+      }
+    },
+    "weekday.monday.short" : {
+      "comment" : "MARK: - Weekdays - short names",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mon"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пн"
+          }
+        }
+      }
+    },
+    "weekday.saturday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saturday"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Суббота"
+          }
+        }
+      }
+    },
+    "weekday.saturday.short" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sat"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сб"
+          }
+        }
+      }
+    },
+    "weekday.sunday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunday"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Воскресенье"
+          }
+        }
+      }
+    },
+    "weekday.sunday.short" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sun"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вс"
+          }
+        }
+      }
+    },
+    "weekday.thursday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thursday"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Четверг"
+          }
+        }
+      }
+    },
+    "weekday.thursday.short" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чт"
+          }
+        }
+      }
+    },
+    "weekday.tuesday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tuesday"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вторник"
+          }
+        }
+      }
+    },
+    "weekday.tuesday.short" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tue"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вт"
+          }
+        }
+      }
+    },
+    "weekday.wednesday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wednesday"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Среда"
+          }
+        }
+      }
+    },
+    "weekday.wednesday.short" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wed"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ср"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.2"
+}
