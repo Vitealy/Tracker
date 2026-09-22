@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import os
 
 final class TrackerStore {
     
@@ -35,6 +36,7 @@ final class TrackerStore {
         trackerCoreData.category = categoryCoreData
         
         print("📅 Сохраняемое расписание: \(scheduleString ?? "nil")")
+        AppLogger.coreData.debug("Сохраняемое расписание: \(scheduleString ?? "nil", privacy: .public)")
         
         // 3. Сохраняем контекст
         try context.save()
@@ -43,6 +45,7 @@ final class TrackerStore {
             context.processPendingChanges()
         }
         print("✅ Трекер сохранён: \(tracker.name), schedule: \(scheduleString ?? "nil")")
+        AppLogger.coreData.info("Трекер сохранён: \(tracker.name, privacy: .private), schedule: \(scheduleString ?? "nil", privacy: .public)")
     }
     
     // MARK: - Получение всех трекеров

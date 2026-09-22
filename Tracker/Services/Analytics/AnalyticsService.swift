@@ -7,6 +7,7 @@
 
 import Foundation
 import AppMetricaCore
+import os
 
 // MARK: - AnalyticsService
 
@@ -53,10 +54,12 @@ final class AnalyticsService {
         
         // Дублируем в лог для отладки на тестах
         print("📊 Analytics: event=\(event.rawValue), screen=\(screen.rawValue), item=\(item?.rawValue ?? "-")")
+        AppLogger.analytics.info("event=\(event.rawValue, privacy: .public), screen=\(screen.rawValue, privacy: .public), item=\(item?.rawValue ?? "-", privacy: .public)")
         
         // Отправляем событие в AppMetrica
         AppMetrica.reportEvent(name: "ui_event", parameters: params) { error in
             print("❌ Analytics error: \(error.localizedDescription)")
+            AppLogger.analytics.error("Analytics error: \(error.localizedDescription)")
         }
     }
 }

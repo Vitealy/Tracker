@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import os
 
 protocol TrackersViewControllerDelegate: AnyObject {
     func didCreateTracker(_ tracker: Tracker, inCategory categoryTitle: String)
@@ -174,16 +175,6 @@ final class TrackersViewController: UIViewController {
         )
         addButton.tintColor = .clear
         navigationItem.leftBarButtonItem = addButton
-        
-//        let addButton = UIButton(type: .custom)
-//        addButton.setImage(
-//            UIImage(resource: .addTracker).withRenderingMode(.alwaysOriginal),
-//            for: .normal
-//        )
-//        addButton.frame = CGRect(x: 0, y: 0, width: 42, height: 42)
-//        addButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
-//
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addButton)
         
         // DatePicker
         let calendar = Calendar.current
@@ -407,9 +398,11 @@ final class TrackersViewController: UIViewController {
                 collectionView.reloadData()
             } catch {
                 print("Ошибка изменения отметки: \(error)")
+                AppLogger.general.error("Ошибка изменения отметки: \(error.localizedDescription)")
             }
         } else {
             print("Нельзя отметить трекер на будущую дату")
+            AppLogger.general.error("Нельзя отметить трекер на будущую дату")
         }
     }
 }

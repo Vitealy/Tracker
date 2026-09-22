@@ -6,6 +6,7 @@
 //
 
 import CoreData
+import os
 
 final class CoreDataManager {
     
@@ -28,6 +29,7 @@ final class CoreDataManager {
         
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
+                AppLogger.coreData.fault("Не удалось загрузить хранилище Core Data: \(error), \(error.userInfo)")
                 assertionFailure("❌ Не удалось загрузить хранилище Core Data: \(error), \(error.userInfo)")
             }
         }

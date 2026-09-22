@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import os
 
 final class MainTabBarController: UITabBarController {
     
@@ -23,6 +24,7 @@ final class MainTabBarController: UITabBarController {
             try categoryStore.migrateDefaultCategoriesToKeys()
         } catch {
             print("❌ Ошибка миграции категорий: \(error)")
+            AppLogger.coreData.error("Ошибка миграции категорий: \(error.localizedDescription)")
         }
     }
     

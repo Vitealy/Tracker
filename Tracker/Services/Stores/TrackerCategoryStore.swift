@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import os
 
 final class TrackerCategoryStore {
     
@@ -29,12 +30,14 @@ final class TrackerCategoryStore {
                 category.title = key
                 hasChanges = true
                 print("🔄 Мигрирована категория: \(title) → \(key)")
+                AppLogger.coreData.info("Мигрирована категория: \(title, privacy: .public) → \(key, privacy: .public)")
             }
         }
         
         if hasChanges {
             try context.save()
             print("✅ Миграция категорий завершена")
+            AppLogger.coreData.info("Миграция категорий завершена")
         }
     }
     
