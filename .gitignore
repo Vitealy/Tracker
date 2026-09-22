@@ -1,0 +1,22 @@
+# Xcode — личные настройки пользователя
+xcuserdata/
+*.xcuserstate
+
+# macOS
+.DS_Store
+
+# Xcode — служебное
+DerivedData/
+build/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# CocoaPods (на будущее, если появятся)
+Pods/
