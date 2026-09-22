@@ -20,3 +20,6 @@ build/
 
 # CocoaPods (на будущее, если появятся)
 Pods/
+
+# API Key
+Config.xcconfig

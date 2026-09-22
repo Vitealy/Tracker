@@ -7,16 +7,23 @@
 
 import UIKit
 import AppMetricaCore
+import os
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        // Инициализация AppMetrica
-        if let configuration = AppMetricaConfiguration(apiKey: "ab9e04fc-1698-45b3-9ebc-83490774f490") {
-            configuration.areLogsEnabled = true // включаем логи библиотеки (полезно при отладке)
+        // Читаем API-ключ из Info.plist (значение подставляется из Config.xcconfig)
+        if let apiKey = Bundle.main.object(forInfoDictionaryKey: "AppMetricaAPIKey") as? String,
+           !apiKey.isEmpty,
+           let configuration = AppMetricaConfiguration(apiKey: apiKey) {
+            configuration.areLogsEnabled = true
             AppMetrica.activate(with: configuration)
+            AppLogger.analytics.info("AppMetrica activated successfully")
+        } else {
+            AppLogger.analytics.error("AppMetrica API key not found in Info.plist")
+            assertionFailure("AppMetrica API key not found in Info.plist")
         }
         
         return true

@@ -37,6 +37,7 @@
 		D1D18A4930207C6E00D14CB4 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1D18A6230207C7000D14CB4 /* TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1D18A6C30207C7000D14CB4 /* TrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1D900B53062F7B7001211C3 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -105,6 +106,7 @@
 		D1D18A4030207C6E00D14CB4 = {
 			isa = PBXGroup;
 			children = (
+				D1D900B53062F7B7001211C3 /* Config.xcconfig */,
 				D1D18A4B30207C6E00D14CB4 /* Tracker */,
 				D1D18A6530207C7000D14CB4 /* TrackerTests */,
 				D1D18A6F30207C7000D14CB4 /* TrackerUITests */,
@@ -379,6 +381,7 @@
 		};
 		D1D18A7830207C7000D14CB4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D1D900B53062F7B7001211C3 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -445,6 +448,7 @@
 		};
 		D1D18A7930207C7000D14CB4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D1D900B53062F7B7001211C3 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
