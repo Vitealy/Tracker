@@ -195,29 +195,29 @@ final class NewTrackerViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton(type: .system)
-            button.setTitle(NSLocalizedString("tracker.cancel.button", comment: "Кнопка отмены"), for: .normal)
-            button.setTitleColor(UIColor(resource: .ypRed), for: .normal)
-            button.backgroundColor = .systemBackground
-            button.layer.borderWidth = 1
-            button.layer.borderColor = UIColor(resource: .ypRed).cgColor
-            button.layer.cornerRadius = 16
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside) // self — экземпляр класса, предупреждение анализатора можно игнорировать.
-            return button
+        button.setTitle(NSLocalizedString("tracker.cancel.button", comment: "Кнопка отмены"), for: .normal)
+        button.setTitleColor(UIColor(resource: .ypRed), for: .normal)
+        button.backgroundColor = .systemBackground
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor(resource: .ypRed).cgColor
+        button.layer.cornerRadius = 16
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside) // self — экземпляр класса, предупреждение анализатора можно игнорировать.
+        return button
     }()
     
     private let createButton: UIButton = {
         let button = UIButton(type: .system)
-            button.setTitle(NSLocalizedString("tracker.create.button", comment: "Кнопка создания"), for: .normal)
-            button.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
-            button.backgroundColor = UIColor(resource: .ypGray)
-            button.layer.cornerRadius = 16
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-            button.isEnabled = false
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside) // self — экземпляр класса, предупреждение анализатора можно игнорировать.
-            return button
+        button.setTitle(NSLocalizedString("tracker.create.button", comment: "Кнопка создания"), for: .normal)
+        button.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
+        button.backgroundColor = UIColor(resource: .ypGray)
+        button.layer.cornerRadius = 16
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.isEnabled = false
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside) // self — экземпляр класса, предупреждение анализатора можно игнорировать.
+        return button
     }()
     
     // MARK: - Properties
@@ -291,7 +291,7 @@ final class NewTrackerViewController: UIViewController {
             updateScheduleLabel()
             updateCreateButtonState() // пересчитать состояние "Создать"
         }
-            
+        
         textField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
         
         let tapGesture = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
@@ -332,7 +332,7 @@ final class NewTrackerViewController: UIViewController {
         categoryDetailLabel.text = displayTitle
         categoryDetailLabel.textColor = .gray
     }
-
+    
     private func updateScheduleLabel() {
         if selectedDays.count == 7 {
             scheduleDetailLabel.text = NSLocalizedString("tracker.schedule.everyDay", comment: "")
@@ -343,7 +343,7 @@ final class NewTrackerViewController: UIViewController {
             scheduleDetailLabel.text = names
         }
     }
-
+    
     private func updateCreateButtonState() {
         let text = textField.text ?? ""
         let isFormValid = !text.isEmpty && selectedEmoji != nil && selectedColor != nil
@@ -599,16 +599,16 @@ final class NewTrackerViewController: UIViewController {
         )
         
         if trackerToEdit != nil {
-                // Обновление
-                do {
-                    try trackerStore.updateTracker(tracker)
-                } catch {
-                    print("Ошибка обновления: \(error)")
-                }
-            } else {
-                // Создание
-                delegate?.didCreateTracker(tracker, inCategory: selectedCategory)
+            // Обновление
+            do {
+                try trackerStore.updateTracker(tracker)
+            } catch {
+                print("Ошибка обновления: \(error)")
             }
+        } else {
+            // Создание
+            delegate?.didCreateTracker(tracker, inCategory: selectedCategory)
+        }
         dismiss(animated: true)
     }
 }

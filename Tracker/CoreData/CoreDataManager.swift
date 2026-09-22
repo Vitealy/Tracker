@@ -28,7 +28,7 @@ final class CoreDataManager {
         
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
-                fatalError("❌ Не удалось загрузить хранилище Core Data: \(error), \(error.userInfo)")
+                assertionFailure("❌ Не удалось загрузить хранилище Core Data: \(error), \(error.userInfo)")
             }
         }
         return container
@@ -50,12 +50,12 @@ final class CoreDataManager {
                 try context.save()
             } catch {
                 let nserror = error as NSError
-                fatalError("❌ Не удалось сохранить контекст Core Data: \(nserror), \(nserror.userInfo)")
+                assertionFailure("❌ Не удалось сохранить контекст Core Data: \(nserror), \(nserror.userInfo)")
             }
         }
     }
     
     private var isRunningTests: Bool {
-        return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 }

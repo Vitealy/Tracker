@@ -20,6 +20,9 @@ final class CategoryViewModel {
     private(set) var categories: [String] = []
     private(set) var selectedCategory: String?
     
+    // MARK: - Private
+    private let defaultsSeededKey = "categories.defaultsSeeded"
+    
     // MARK: - Init
     init(categoryStore: TrackerCategoryStore) {
         self.categoryStore = categoryStore
@@ -29,17 +32,20 @@ final class CategoryViewModel {
     // MARK: - Public Methods
     
     func loadCategories() {
+        seedDefaultCategoriesIfNeeded()
+        
         let fetched = categoryStore.fetchAllCategories()
-        if fetched.isEmpty {
-            for key in CategoryConstants.defaultCategoryKeys {
-                _ = try? categoryStore.getOrCreateCategory(with: key)
-            }
-            let updated = categoryStore.fetchAllCategories()
-            categories = updated.map { $0.title }
-        } else {
-            categories = fetched.map { $0.title }
-        }
+        categories = fetched.map { $0.title }
         onCategoriesUpdated?()
+    }
+    
+    private func seedDefaultCategoriesIfNeeded() {
+        guard !UserDefaults.standard.bool(forKey: defaultsSeededKey) else { return }
+        
+        for key in CategoryConstants.defaultCategoryKeys {
+            _ = try? categoryStore.getOrCreateCategory(with: key)
+        }
+        UserDefaults.standard.set(true, forKey: defaultsSeededKey)
     }
     
     func numberOfCategories() -> Int {
