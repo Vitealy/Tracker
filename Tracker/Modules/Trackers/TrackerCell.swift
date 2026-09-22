@@ -26,7 +26,7 @@ final class TrackerCell: UICollectionViewCell {
     private let bottomView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(resource: .ypBackground)
         return view
     }()
     

@@ -121,7 +121,7 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         currentFilter = filterStorage.current
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(resource: .ypBackground)
         setupNavigationBar()
         setupSearchTextField()
         setupCollectionView()

@@ -6,14 +6,12 @@
 //
 
 import UIKit
-import CoreData
 
 final class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        migrateCategoriesIfNeeded()
-        cleanupOrphanRecordsIfNeeded(context: CoreDataManager.shared.context) 
+        migrateCategoriesIfNeeded() 
         setupTabs()
         setupTabBarDivider()
     }
@@ -25,21 +23,6 @@ final class MainTabBarController: UITabBarController {
             try categoryStore.migrateDefaultCategoriesToKeys()
         } catch {
             print("❌ Ошибка миграции категорий: \(error)")
-        }
-    }
-    
-    /// Удаляет записи о выполнении, у которых tracker == nil (сироты).
-    /// Идемпотентно: если сирот нет — ничего не делает.
-    func cleanupOrphanRecordsIfNeeded(context: NSManagedObjectContext) {
-        let request = TrackerRecordCoreData.fetchRequest()
-        request.predicate = NSPredicate(format: "tracker == nil")
-        guard let orphans = try? context.fetch(request), !orphans.isEmpty else { return }
-        orphans.forEach { context.delete($0) }
-        do {
-            try context.save()
-            print("🧹 Удалено осиротевших записей: \(orphans.count)")
-        } catch {
-            print("❌ Ошибка очистки записей: \(error)")
         }
     }
     
@@ -88,7 +71,7 @@ final class MainTabBarController: UITabBarController {
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .systemBackground
+        appearance.backgroundColor = UIColor(resource: .ypBackground)
         appearance.shadowColor = .clear
         appearance.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 17, weight: .regular),
@@ -109,6 +92,7 @@ final class MainTabBarController: UITabBarController {
         // Убираем стандартную тень (чтобы не было дублирования)
         tabBar.shadowImage = UIImage()
         tabBar.backgroundImage = UIImage()
+        tabBar.backgroundColor = UIColor(resource: .ypBackground)
         
         // Создаём линию
         let lineView = UIView()

@@ -53,7 +53,7 @@ final class ScheduleViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(resource: .ypBackground)
         navigationItem.title = NSLocalizedString("schedule.title", comment: "Заголовок экрана расписания")
         navigationItem.hidesBackButton = true
         setupLayout()

@@ -15,7 +15,7 @@ final class StatisticsCell: UITableViewCell {
     
     private let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(resource: .ypBackground)
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false

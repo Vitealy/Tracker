@@ -251,7 +251,7 @@ final class NewTrackerViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(resource: .ypBackground)
         
         // Заголовок: "Новая привычка" или "Редактирование привычки"
         if trackerToEdit != nil {

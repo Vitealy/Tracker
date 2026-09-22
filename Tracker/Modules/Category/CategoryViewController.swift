@@ -80,7 +80,7 @@ final class CategoryViewController: UIViewController {
     
     // MARK: - Setup
     private func setupUI() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(resource: .ypBackground)
         navigationItem.title = NSLocalizedString("category.title", comment: "Заголовок экрана категорий")
         
         view.addSubview(tableView)

@@ -33,7 +33,7 @@ final class NewCategoryViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle(NSLocalizedString("category.done.button", comment: "Кнопка Готово"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
         button.backgroundColor = UIColor(resource: .ypBlack)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +64,7 @@ final class NewCategoryViewController: UIViewController {
     
     // MARK: - Setup
     private func setupUI() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(resource: .ypBackground)
         
         view.addSubview(textField)
         view.addSubview(doneButton)

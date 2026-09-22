@@ -41,7 +41,7 @@ final class FiltersViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(resource: .ypBackground)
         navigationItem.title = NSLocalizedString("filter.title", comment: "")
         
         tableView.dataSource = self
