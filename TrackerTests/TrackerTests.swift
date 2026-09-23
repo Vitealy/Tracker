@@ -6,33 +6,110 @@
 //
 
 import XCTest
+import SnapshotTesting
 @testable import Tracker
+import CoreData
 
-final class TrackerTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+@MainActor
+final class TrackersViewControllerSnapshotTests: XCTestCase {
+    
+    // MARK: - Lifecycle
+    
+    override func setUp() {
+        super.setUp()
+        cleanInMemoryContext()
     }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    
+    // MARK: - Tests
+    
+    func testTrackersViewController_empty_light() {
+        let vc = makeTrackersViewController()
+        assertSnapshot(
+            of: vc,
+            as: .image(on: .iPhone13, traits: .init(userInterfaceStyle: .light))
+        )
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-        // XCTest Documentation
-        // https://developer.apple.com/documentation/xctest
+    
+    func testTrackersViewController_empty_dark() {
+        let vc = makeTrackersViewController()
+        assertSnapshot(
+            of: vc,
+            as: .image(on: .iPhone13, traits: .init(userInterfaceStyle: .dark))
+        )
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    
+//    func testTrackersViewController_withData_light() {
+//        seedTestData()
+//        let vc = makeTrackersViewController()
+//        assertSnapshot(
+//            of: vc,
+//            as: .image(on: .iPhone13, traits: .init(userInterfaceStyle: .light))
+//        )
+//    }
+//    
+//    func testTrackersViewController_withData_dark() {
+//        seedTestData()
+//        let vc = makeTrackersViewController()
+//        assertSnapshot(
+//            of: vc,
+//            as: .image(on: .iPhone13, traits: .init(userInterfaceStyle: .dark))
+//        )
+//    }
+    
+    // MARK: - Helpers
+    
+    private func makeTrackersViewController() -> UIViewController {
+        let context = CoreDataManager.shared.context
+        let trackerStore = TrackerStore(context: context)
+        let categoryStore = TrackerCategoryStore(context: context)
+        let recordStore = TrackerRecordStore(context: context)
+        
+        let vc = TrackersViewController(
+            trackerStore: trackerStore,
+            categoryStore: categoryStore,
+            recordStore: recordStore
+        )
+        
+        return UINavigationController(rootViewController: vc)
+    }
+    
+    private func seedTestData() {
+        let context = CoreDataManager.shared.context
+        let trackerStore = TrackerStore(context: context)
+        let categoryStore = TrackerCategoryStore(context: context)
+        
+        do {
+            let categoryKey = "category.default.important"
+            _ = try categoryStore.getOrCreateCategory(with: categoryKey)
+            
+            let tracker = Tracker(
+                id: UUID(),
+                name: "Пить воду",
+                color: "Color_1",
+                emoji: "💧",
+                schedule: Weekday.allCases,
+                categoryKey: categoryKey
+            )
+            let category = TrackerCategory(title: categoryKey, trackers: [tracker])
+            try trackerStore.addTracker(tracker, in: category)
+        } catch {
+            XCTFail("Не удалось заполнить тестовые данные: \(error)")
         }
     }
-
+    
+    /// Удаляет все объекты из контекста — работает для in-memory store.
+    private func cleanInMemoryContext() {
+        let context = CoreDataManager.shared.context
+        let entities = ["TrackerRecordCoreData", "TrackerCoreData", "TrackerCategoryCoreData"]
+        
+        for entityName in entities {
+            let fetch = NSFetchRequest<NSManagedObject>(entityName: entityName)
+            if let objects = try? context.fetch(fetch) {
+                for object in objects {
+                    context.delete(object)
+                }
+            }
+        }
+        try? context.save()
+    }
 }

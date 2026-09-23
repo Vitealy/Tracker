@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import os
 
 final class TrackerCategoryStore {
     
@@ -14,6 +15,30 @@ final class TrackerCategoryStore {
     
     init(context: NSManagedObjectContext) {
         self.context = context
+    }
+    
+    // MARK: - Миграция дефолтных категорий в ключи локализации
+
+    func migrateDefaultCategoriesToKeys() throws {
+        let request = TrackerCategoryCoreData.fetchRequest()
+        guard let categories = try? context.fetch(request) else { return }
+        
+        var hasChanges = false
+        for category in categories {
+            guard let title = category.title else { continue }
+            if let key = CategoryConstants.legacyTitleToKeyMap[title] {
+                category.title = key
+                hasChanges = true
+                print("🔄 Мигрирована категория: \(title) → \(key)")
+                AppLogger.coreData.info("Мигрирована категория: \(title, privacy: .public) → \(key, privacy: .public)")
+            }
+        }
+        
+        if hasChanges {
+            try context.save()
+            print("✅ Миграция категорий завершена")
+            AppLogger.coreData.info("Миграция категорий завершена")
+        }
     }
     
     // MARK: - Получение или создание категории по названию
@@ -58,7 +83,8 @@ final class TrackerCategoryStore {
                     name: name,
                     color: color,
                     emoji: emoji,
-                    schedule: schedule
+                    schedule: schedule,
+                    categoryKey: title
                 )
             }
             

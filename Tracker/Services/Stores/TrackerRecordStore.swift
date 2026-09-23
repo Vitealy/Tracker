@@ -77,4 +77,25 @@ final class TrackerRecordStore {
         guard let count = try? context.count(for: request) else { return false }
         return count > 0
     }
+    
+    // MARK: - Получение всех записей (для статистики)
+
+    func fetchAllRecords() -> [(trackerId: UUID, date: Date)] {
+        let request = TrackerRecordCoreData.fetchRequest()
+        guard let results = try? context.fetch(request) else { return [] }
+        return results.compactMap { record in
+            guard let id = record.trackerId, let date = record.date else { return nil }
+            return (id, date)
+        }
+    }
+    
+    // MARK: - Удаление всех записей для трекера
+
+    func deleteRecords(for trackerId: UUID) throws {
+        let request = TrackerRecordCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "trackerId == %@", trackerId as CVarArg)
+        guard let objects = try? context.fetch(request) else { return }
+        objects.forEach { context.delete($0) }
+        try context.save()
+    }
 }

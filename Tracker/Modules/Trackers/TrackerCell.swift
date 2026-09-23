@@ -26,7 +26,7 @@ final class TrackerCell: UICollectionViewCell {
     private let bottomView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(resource: .ypBackground)
         return view
     }()
     
@@ -34,7 +34,7 @@ final class TrackerCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
         label.textAlignment = .center
-        label.backgroundColor = .white.withAlphaComponent(0.3)
+        label.backgroundColor = UIColor(resource: .ypWhite).withAlphaComponent(0.3)
         label.layer.cornerRadius = 12
         label.clipsToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -53,7 +53,7 @@ final class TrackerCell: UICollectionViewCell {
     private let daysLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textColor = .ypBlack // или системный
+        label.textColor = .ypBlack 
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -118,7 +118,8 @@ final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Private Helpers
     private func pluralizeDays(_ count: Int) -> String {
-        return "\(count) \(getDaysWord(for: count))"
+        let format = NSLocalizedString("days.count", comment: "Количество дней, например: 5 дней")
+        return String.localizedStringWithFormat(format, count)
     }
     
     private func getDaysWord(for count: Int) -> String {

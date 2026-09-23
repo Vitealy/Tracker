@@ -35,10 +35,10 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var doneButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(NSLocalizedString("schedule.done.button", comment: "Кнопка Готово"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = UIColor(resource: .ypBlack)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
@@ -53,8 +53,8 @@ final class ScheduleViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        navigationItem.title = "Расписание"
+        view.backgroundColor = UIColor(resource: .ypBackground)
+        navigationItem.title = NSLocalizedString("schedule.title", comment: "Заголовок экрана расписания")
         navigationItem.hidesBackButton = true
         setupLayout()
     }
@@ -96,7 +96,7 @@ extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let day = days[indexPath.row]
-        cell.textLabel?.text = day.fullName
+        cell.textLabel?.text = NSLocalizedString(day.localizationKey, comment: "Название дня недели")
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         cell.textLabel?.textColor = .label
         cell.backgroundColor = .clear
@@ -131,7 +131,6 @@ extension ScheduleViewController: UITableViewDelegate {
             // Сдвигаем разделитель за правый край таблицы, делая его невидимым
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         } else {
-            // Для всех остальных ячеек оставляем отступы как в макете (16 слева и справа)
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         }
     }

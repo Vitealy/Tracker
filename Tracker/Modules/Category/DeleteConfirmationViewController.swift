@@ -10,6 +10,7 @@ import UIKit
 final class DeleteConfirmationViewController: UIViewController {
     
     var onConfirm: (() -> Void)?
+    var messageText: String = NSLocalizedString("category.delete.message", comment: "Сообщение подтверждения удаления категории")
     
     // MARK: - UI Elements
     private let backgroundView: UIView = {
@@ -19,7 +20,6 @@ final class DeleteConfirmationViewController: UIViewController {
         return view
     }()
     
-    // Верхний блок (текст + кнопка "Удалить")
     private let topContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
@@ -38,7 +38,6 @@ final class DeleteConfirmationViewController: UIViewController {
     
     private let messageLabel: UILabel = {
         let label = UILabel()
-        label.text = "Эта категория точно не нужна?"
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         label.textColor = UIColor(resource: .ypGray)
         label.textAlignment = .center
@@ -55,7 +54,7 @@ final class DeleteConfirmationViewController: UIViewController {
     
     private let deleteButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Удалить", for: .normal)
+        button.setTitle(NSLocalizedString("category.delete.button", comment: "Кнопка удаления"), for: .normal)
         button.setTitleColor(UIColor(resource: .ypRed2), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .regular)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -63,7 +62,6 @@ final class DeleteConfirmationViewController: UIViewController {
         return button
     }()
     
-    // Нижний блок (кнопка "Отменить")
     private let bottomContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(resource: .ypWhite)
@@ -75,7 +73,7 @@ final class DeleteConfirmationViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Отменить", for: .normal)
+        button.setTitle(NSLocalizedString("category.cancel.button", comment: "Кнопка отмены"), for: .normal)
         button.setTitleColor(UIColor(resource: .ypBlue2), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -87,6 +85,7 @@ final class DeleteConfirmationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        messageLabel.text = messageText
     }
     
     // MARK: - Setup

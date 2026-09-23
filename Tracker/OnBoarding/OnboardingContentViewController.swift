@@ -12,7 +12,7 @@ final class OnboardingContentViewController: UIViewController {
     // MARK: - Properties
     private let image: UIImage
     private let titleText: String
-    private let buttonTitle = "Вот это технологии!"
+    private let buttonTitle = NSLocalizedString("onboarding.button.title", comment: "Кнопка завершения онбординга")
     
     var onButtonTap: (() -> Void)?
     
@@ -28,8 +28,9 @@ final class OnboardingContentViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        nil
     }
     
     // MARK: - Lifecycle
@@ -41,7 +42,7 @@ final class OnboardingContentViewController: UIViewController {
     
     // MARK: - Setup
     private func setupViews() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(resource: .ypBackground)
         
         imageView.image = image
         imageView.contentMode = .scaleAspectFill
@@ -73,7 +74,7 @@ final class OnboardingContentViewController: UIViewController {
         
         button.setTitle(buttonTitle, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
         button.backgroundColor = UIColor(resource: .ypBlack)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false

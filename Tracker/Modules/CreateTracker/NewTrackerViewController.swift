@@ -22,9 +22,6 @@ final class NewTrackerViewController: UIViewController {
         "Color_13", "Color_14", "Color_15", "Color_16", "Color_17", "Color_18"
     ]
     
-    private var selectedEmoji: String?
-    private var selectedColor: String?
-    
     // MARK: - UI Elements
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -40,7 +37,7 @@ final class NewTrackerViewController: UIViewController {
     
     private let textField: UITextField = {
         let field = UITextField()
-        field.placeholder = "Введите название трекера"
+        field.placeholder = NSLocalizedString("tracker.textfield.placeholder", comment: "Плейсхолдер поля ввода названия трекера")
         field.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         field.backgroundColor = UIColor(resource: .grayLight)
         field.layer.cornerRadius = 16
@@ -72,7 +69,7 @@ final class NewTrackerViewController: UIViewController {
     
     private let categoryLabel: UILabel = {
         let label = UILabel()
-        label.text = "Категория"
+        label.text = NSLocalizedString("tracker.section.category", comment: "Заголовок раздела Категория")
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -81,7 +78,7 @@ final class NewTrackerViewController: UIViewController {
     
     private let categoryDetailLabel: UILabel = {
         let label = UILabel()
-        label.text = "Важное"
+        label.text = NSLocalizedString("category.default.important", comment: "Название категории по умолчанию - указываем Важное")
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         label.textColor = .gray
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -115,7 +112,7 @@ final class NewTrackerViewController: UIViewController {
     
     private let scheduleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Расписание"
+        label.text = NSLocalizedString("tracker.section.schedule", comment: "Заголовок раздела Расписание")
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -124,7 +121,7 @@ final class NewTrackerViewController: UIViewController {
     
     private let scheduleDetailLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ежедневно"
+        label.text = NSLocalizedString("tracker.schedule.everyday", comment: "По умолчанию — ежедневно")
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         label.textColor = .gray
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -143,7 +140,7 @@ final class NewTrackerViewController: UIViewController {
     // MARK: - Emoji
     private let emojiTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Emoji"
+        label.text = NSLocalizedString("tracker.section.emoji", comment: "Заголовок раздела Emoji")
         label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -166,7 +163,7 @@ final class NewTrackerViewController: UIViewController {
     // MARK: - Color
     private let colorTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Цвет"
+        label.text = NSLocalizedString("tracker.section.color", comment: "Заголовок раздела Цвет")
         label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -198,42 +195,51 @@ final class NewTrackerViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton(type: .system)
-            button.setTitle("Отменить", for: .normal)
-            button.setTitleColor(UIColor(resource: .ypRed), for: .normal)
-            button.backgroundColor = .systemBackground
-            button.layer.borderWidth = 1
-            button.layer.borderColor = UIColor(resource: .ypRed).cgColor
-            button.layer.cornerRadius = 16
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside) // self — экземпляр класса, предупреждение анализатора можно игнорировать.
-            return button
+        button.setTitle(NSLocalizedString("tracker.cancel.button", comment: "Кнопка отмены"), for: .normal)
+        button.setTitleColor(UIColor(resource: .ypRed), for: .normal)
+        button.backgroundColor = .systemBackground
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor(resource: .ypRed).cgColor
+        button.layer.cornerRadius = 16
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside) // self — экземпляр класса, предупреждение анализатора можно игнорировать.
+        return button
     }()
     
     private let createButton: UIButton = {
         let button = UIButton(type: .system)
-            button.setTitle("Создать", for: .normal)
-            button.setTitleColor(.white, for: .normal)
-            button.backgroundColor = UIColor(resource: .ypGray)
-            button.layer.cornerRadius = 16
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-            button.isEnabled = false
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside) // self — экземпляр класса, предупреждение анализатора можно игнорировать.
-            return button
+        button.setTitle(NSLocalizedString("tracker.create.button", comment: "Кнопка создания"), for: .normal)
+        button.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
+        button.backgroundColor = UIColor(resource: .ypGray)
+        button.layer.cornerRadius = 16
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.isEnabled = false
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside) // self — экземпляр класса, предупреждение анализатора можно игнорировать.
+        return button
     }()
     
     // MARK: - Properties
     private let trackerType: TrackerType
     private let categoryStore: TrackerCategoryStore
+    private let trackerStore: TrackerStore
+    private let trackerToEdit: Tracker?
+    private var selectedEmoji: String?
+    private var selectedColor: String?
     private var selectedCategory: String = "Важное"
     private var selectedDays: [Weekday] = Weekday.allCases
     weak var delegate: TrackersViewControllerDelegate?
     
     // MARK: - Init
-    init(trackerType: TrackerType, categoryStore: TrackerCategoryStore) {
+    init(trackerType: TrackerType,
+         categoryStore: TrackerCategoryStore,
+         trackerStore: TrackerStore,
+         trackerToEdit: Tracker? = nil) {
         self.trackerType = trackerType
         self.categoryStore = categoryStore
+        self.trackerStore = trackerStore
+        self.trackerToEdit = trackerToEdit
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -245,9 +251,18 @@ final class NewTrackerViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(resource: .ypBackground)
         
-        navigationItem.title = trackerType == .habit ? "Новая привычка" : "Новое нерегулярное событие"
+        // Заголовок: "Новая привычка" или "Редактирование привычки"
+        if trackerToEdit != nil {
+            navigationItem.title = trackerType == .habit
+            ? NSLocalizedString("tracker.edit.habit.title", comment: "")
+            : NSLocalizedString("tracker.edit.irregular.title", comment: "")
+        } else {
+            navigationItem.title = trackerType == .habit
+            ? NSLocalizedString("tracker.new.habit", comment: "")
+            : NSLocalizedString("tracker.new.irregular", comment: "")
+        }
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
@@ -263,11 +278,81 @@ final class NewTrackerViewController: UIViewController {
         
         setupLayout()
         setupCollections()
+        
+        if let tracker = trackerToEdit {
+            textField.text = tracker.name
+            selectedEmoji = tracker.emoji
+            selectedColor = tracker.color
+            selectedCategory = tracker.categoryKey ?? "Важное" // если у тебя есть ключ
+            if let schedule = tracker.schedule {
+                selectedDays = schedule
+            }
+            updateCategoryLabel()
+            updateScheduleLabel()
+            updateCreateButtonState() // пересчитать состояние "Создать"
+        }
+        
         textField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
         
         let tapGesture = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
+        
+        fillFieldsIfEditing()
+    }
+    
+    private func fillFieldsIfEditing() {
+        guard let tracker = trackerToEdit else { return }
+        
+        textField.text = tracker.name
+        selectedEmoji = tracker.emoji
+        selectedColor = tracker.color
+        if let categoryKey = tracker.categoryKey {
+            selectedCategory = categoryKey
+        }
+        if let schedule = tracker.schedule {
+            selectedDays = schedule
+        }
+        
+        // Обновляем UI на основе новых данных
+        updateCategoryLabel()
+        updateScheduleLabel()
+        updateCreateButtonState()
+        
+        // Перезагружаем коллекции, чтобы галочки/обводки стояли на выбранных элементах
+        emojiCollectionView.reloadData()
+        colorCollectionView.reloadData()
+        
+        // Меняем текст кнопки "Создать" на "Сохранить"
+        createButton.setTitle(NSLocalizedString("tracker.save.button", comment: ""), for: .normal)
+    }
+    
+    private func updateCategoryLabel() {
+        let displayTitle = CategoryLocalization.displayTitle(for: selectedCategory)
+        categoryDetailLabel.text = displayTitle
+        categoryDetailLabel.textColor = .gray
+    }
+    
+    private func updateScheduleLabel() {
+        if selectedDays.count == 7 {
+            scheduleDetailLabel.text = NSLocalizedString("tracker.schedule.everyDay", comment: "")
+        } else if selectedDays.isEmpty {
+            scheduleDetailLabel.text = ""
+        } else {
+            let names = selectedDays.map { $0.shortName }.joined(separator: ", ")
+            scheduleDetailLabel.text = names
+        }
+    }
+    
+    private func updateCreateButtonState() {
+        let text = textField.text ?? ""
+        let isFormValid = !text.isEmpty && selectedEmoji != nil && selectedColor != nil
+        createButton.isEnabled = isFormValid
+        createButton.backgroundColor = isFormValid ? UIColor(resource: .ypBlack) : UIColor(resource: .ypGray)
+        
+        if trackerToEdit != nil {
+            createButton.setTitle(NSLocalizedString("tracker.save.button", comment: ""), for: .normal)
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -479,9 +564,10 @@ final class NewTrackerViewController: UIViewController {
     @objc private func categoryTapped() {
         let viewModel = CategoryViewModel(categoryStore: categoryStore)
         let categoryVC = CategoryViewController(viewModel: viewModel)
-        categoryVC.onCategorySelected = { [weak self] category in
-            self?.selectedCategory = category
-            self?.categoryDetailLabel.text = category
+        categoryVC.onCategorySelected = { [weak self] categoryKey in
+            let displayTitle = CategoryLocalization.displayTitle(for: categoryKey)
+            self?.selectedCategory = categoryKey
+            self?.categoryDetailLabel.text = displayTitle
             self?.categoryDetailLabel.textColor = .gray
         }
         let navController = UINavigationController(rootViewController: categoryVC)
@@ -508,9 +594,21 @@ final class NewTrackerViewController: UIViewController {
             name: name,
             color: color,
             emoji: emoji,
-            schedule: trackerType == .habit ? selectedDays : nil
+            schedule: trackerType == .habit ? selectedDays : nil,
+            categoryKey: selectedCategory
         )
-        delegate?.didCreateTracker(tracker, inCategory: selectedCategory)
+        
+        if trackerToEdit != nil {
+            // Обновление
+            do {
+                try trackerStore.updateTracker(tracker)
+            } catch {
+                print("Ошибка обновления: \(error)")
+            }
+        } else {
+            // Создание
+            delegate?.didCreateTracker(tracker, inCategory: selectedCategory)
+        }
         dismiss(animated: true)
     }
 }
@@ -520,7 +618,7 @@ extension NewTrackerViewController: ScheduleViewControllerDelegate {
     func didSelectSchedule(days: [Weekday]) {
         selectedDays = days
         if days.count == 7 {
-            scheduleDetailLabel.text = "Каждый день"
+            scheduleDetailLabel.text = NSLocalizedString("tracker.schedule.everyDay", comment: "Каждый день")
         } else {
             let dayNames = days.map { $0.shortName }.joined(separator: ", ")
             scheduleDetailLabel.text = dayNames

@@ -15,6 +15,14 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         
+        // 🚫 Если запущены тесты — не строим реальный UI приложения
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+            window.rootViewController = UIViewController()
+            self.window = window
+            window.makeKeyAndVisible()
+            return
+        }
+        
         // Проверка первого запуска
         let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
         if hasSeenOnboarding {

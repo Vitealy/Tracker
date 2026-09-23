@@ -21,7 +21,7 @@ final class TrackerTypeViewController: UIViewController {
     // MARK: - UI Elements
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Создание трекера"
+        label.text = NSLocalizedString("tracker.type.title", comment: "Заголовок экрана создания трекера")
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textColor = .label
         label.textAlignment = .center
@@ -31,10 +31,10 @@ final class TrackerTypeViewController: UIViewController {
     
     private lazy var habitButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Привычка", for: .normal)
+        button.setTitle(NSLocalizedString("tracker.type.habit", comment: "Кнопка Привычка"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = UIColor(named: "YP Black") ?? .black
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(habitButtonTapped), for: .touchUpInside)
@@ -43,10 +43,10 @@ final class TrackerTypeViewController: UIViewController {
     
     private lazy var irregularButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Нерегулярное событие", for: .normal)
+        button.setTitle(NSLocalizedString("tracker.type.irregular", comment: "Кнопка Нерегулярное событие"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = UIColor(named: "YP Black") ?? .black
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(irregularButtonTapped), for: .touchUpInside)
@@ -59,7 +59,7 @@ final class TrackerTypeViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(resource: .ypBackground)
         setupLayout()
     }
     

@@ -20,6 +20,9 @@ final class CategoryViewModel {
     private(set) var categories: [String] = []
     private(set) var selectedCategory: String?
     
+    // MARK: - Private
+    private let defaultsSeededKey = "categories.defaultsSeeded"
+    
     // MARK: - Init
     init(categoryStore: TrackerCategoryStore) {
         self.categoryStore = categoryStore
@@ -29,19 +32,20 @@ final class CategoryViewModel {
     // MARK: - Public Methods
     
     func loadCategories() {
+        seedDefaultCategoriesIfNeeded()
+        
         let fetched = categoryStore.fetchAllCategories()
-        if fetched.isEmpty {
-            // Добавляем категории по умолчанию
-            do {
-                for title in CategoryConstants.defaultCategories {
-                    _ = try categoryStore.getOrCreateCategory(with: title)
-                }
-            } catch {
-                onError?("Не удалось добавить категории по умолчанию")
-            }
-        }
-        categories = categoryStore.fetchAllCategories().map { $0.title }
+        categories = fetched.map { $0.title }
         onCategoriesUpdated?()
+    }
+    
+    private func seedDefaultCategoriesIfNeeded() {
+        guard !UserDefaults.standard.bool(forKey: defaultsSeededKey) else { return }
+        
+        for key in CategoryConstants.defaultCategoryKeys {
+            _ = try? categoryStore.getOrCreateCategory(with: key)
+        }
+        UserDefaults.standard.set(true, forKey: defaultsSeededKey)
     }
     
     func numberOfCategories() -> Int {
@@ -67,7 +71,7 @@ final class CategoryViewModel {
             _ = try categoryStore.getOrCreateCategory(with: category.title)
             loadCategories() // перезагружаем список
         } catch {
-            onError?("Не удалось добавить категорию")
+            onError?(NSLocalizedString("category.error.add", comment: "Ошибка добавления категории"))
         }
     }
     
@@ -77,7 +81,7 @@ final class CategoryViewModel {
             try categoryStore.updateCategory(oldTitle: oldName, newTitle: newName)
             loadCategories()
         } catch {
-            onError?("Не удалось обновить категорию")
+            onError?(NSLocalizedString("category.error.update", comment: "Ошибка обновления категории"))
         }
     }
     
@@ -87,7 +91,7 @@ final class CategoryViewModel {
             try categoryStore.deleteCategory(with: title)
             loadCategories()
         } catch {
-            onError?("Не удалось удалить категорию")
+            onError?(NSLocalizedString("category.error.delete", comment: "Ошибка удаления категории"))
         }
     }
 }

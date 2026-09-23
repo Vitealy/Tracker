@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import os
 
 final class TrackerStore {
     
@@ -35,11 +36,16 @@ final class TrackerStore {
         trackerCoreData.category = categoryCoreData
         
         print("📅 Сохраняемое расписание: \(scheduleString ?? "nil")")
+        AppLogger.coreData.debug("Сохраняемое расписание: \(scheduleString ?? "nil", privacy: .public)")
         
         // 3. Сохраняем контекст
         try context.save()
-        context.processPendingChanges()
+//        context.processPendingChanges()
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            context.processPendingChanges()
+        }
         print("✅ Трекер сохранён: \(tracker.name), schedule: \(scheduleString ?? "nil")")
+        AppLogger.coreData.info("Трекер сохранён: \(tracker.name, privacy: .private), schedule: \(scheduleString ?? "nil", privacy: .public)")
     }
     
     // MARK: - Получение всех трекеров
@@ -79,34 +85,59 @@ final class TrackerStore {
         existing.color = tracker.color
         existing.emoji = tracker.emoji
         existing.schedule = tracker.schedule?.map { $0.rawValue }.joined(separator: ",")
+        
+        // Обновляем категорию, если она изменилась
+        if let categoryKey = tracker.categoryKey {
+            let categoryStore = TrackerCategoryStore(context: context)
+            if let newCategory = try? categoryStore.getOrCreateCategory(with: categoryKey) {
+                existing.category = newCategory
+            }
+        }
+        
         try context.save()
+        context.processPendingChanges()
     }
     
     // MARK: - Удаление трекера
-    
-    func deleteTracker(by id: UUID) throws {
+
+    /// Удаляет трекер по id вместе со всеми связанными записями о выполнении.
+    func deleteTracker(withId id: UUID) throws {
+        // 1. Сначала удаляем записи о выполнении — до удаления трекера,
+        //    чтобы predicate по trackerId гарантированно нашёл их.
+        let recordStore = TrackerRecordStore(context: context)
+        try recordStore.deleteRecords(for: id)
+        
+        // 2. Теперь удаляем сам трекер.
         let request = TrackerCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
-        guard let object = try? context.fetch(request).first else { return }
-        context.delete(object)
+        guard let tracker = try? context.fetch(request).first else { return }
+        context.delete(tracker)
+        
+        // 3. Сохраняем и прогоняем pending changes,
+        //    чтобы NSFetchedResultsController сразу увидел изменения.
         try context.save()
+        context.processPendingChanges()
     }
     
-    func fetchedResultsController(for date: Date) -> NSFetchedResultsController<TrackerCoreData> {
+    func fetchedResultsController(
+        for date: Date,
+        searchQuery: String = "",
+        filter: TrackerFilter = .all
+    ) -> NSFetchedResultsController<TrackerCoreData> {
         let fetchRequest = TrackerCoreData.fetchRequest()
         fetchRequest.includesPendingChanges = true
-        // Сортировка: сначала по категории, затем по имени
+        
         fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "isPinned", ascending: false),
             NSSortDescriptor(key: "category.title", ascending: true),
             NSSortDescriptor(key: "name", ascending: true)
         ]
         
-        // Получаем название дня недели для текущей даты (например, "Пн")
+        // День недели
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ru_RU")
         dateFormatter.dateFormat = "EEEE"
-        let weekdayString = dateFormatter.string(from: date).lowercased() // "понедельник"
-        // Приводим к формату, который хранится в schedule (например, "Пн")
+        let weekdayString = dateFormatter.string(from: date).lowercased()
         let weekdayShort: String = {
             switch weekdayString {
             case "понедельник": return "Пн"
@@ -120,20 +151,47 @@ final class TrackerStore {
             }
         }()
         
-        // Предикат: показываем трекеры, у которых расписание содержит этот день ИЛИ расписание отсутствует (нерегулярные)
-        let predicate = NSPredicate(format: "schedule == nil OR schedule CONTAINS[c] %@", weekdayShort)
-        fetchRequest.predicate = predicate
+        var predicates: [NSPredicate] = [
+            NSPredicate(format: "schedule == nil OR schedule CONTAINS[c] %@", weekdayShort)
+        ]
         
-        let fetchedResultsController = NSFetchedResultsController(
+        // Поиск по имени
+        if !searchQuery.isEmpty {
+            predicates.append(NSPredicate(format: "name CONTAINS[c] %@", searchQuery))
+        }
+        
+        // Фильтры по завершённости
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+        if let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) {
+            switch filter {
+            case .all, .today:
+                break // без дополнительной фильтрации
+            case .completed:
+                // есть хотя бы одна запись за этот день
+                predicates.append(NSPredicate(
+                    format: "SUBQUERY(records, $r, $r.date >= %@ AND $r.date < %@).@count > 0",
+                    startOfDay as CVarArg, endOfDay as CVarArg
+                ))
+            case .uncompleted:
+                // нет ни одной записи за этот день
+                predicates.append(NSPredicate(
+                    format: "SUBQUERY(records, $r, $r.date >= %@ AND $r.date < %@).@count == 0",
+                    startOfDay as CVarArg, endOfDay as CVarArg
+                ))
+            }
+        }
+        
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        
+        let frc = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
-            sectionNameKeyPath: "category.title", // группировка по названию категории
+            sectionNameKeyPath: nil,
             cacheName: nil
         )
-        
-        try? fetchedResultsController.performFetch()
-        print("🔍 Найдено объектов после fetch: \(fetchedResultsController.fetchedObjects?.count ?? 0)")
-        return fetchedResultsController
+        try? frc.performFetch()
+        return frc
     }
     
     func refreshContext() {
@@ -149,7 +207,13 @@ final class TrackerStore {
             .split(separator: ",")
             .compactMap { Weekday(rawValue: String($0)) }
         
-        return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule)
+        return Tracker(id: id,
+                       name: name,
+                       color: color,
+                       emoji: emoji,
+                       schedule: schedule,
+                       categoryKey: coreData.category?.title
+        )
     }
     
     // MARK: - Конвертация Core Data → структура Tracker
@@ -169,8 +233,29 @@ final class TrackerStore {
             name: name,
             color: color,
             emoji: emoji,
-            schedule: schedule
+            schedule: schedule,
+            categoryKey: coreData.category?.title
         )
+    }
+    
+    // MARK: - Закрепление/открепление
+
+    func togglePin(for trackerId: UUID) throws {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", trackerId as CVarArg)
+        guard let tracker = try? context.fetch(request).first else { return }
+        tracker.isPinned.toggle()
+        try context.save()
+        context.processPendingChanges()
+    }
+
+    // MARK: - Получение трекера по id (для редактирования)
+
+    func fetchTracker(by id: UUID) -> Tracker? {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        guard let object = try? context.fetch(request).first else { return nil }
+        return convertToTracker(from: object)
     }
     
 }
